@@ -1,0 +1,63 @@
+.bg-light-green {
+    background-color: #01573C;
+}
+
+.btn-light-green {
+    background-color: #E2EDE9;
+    border-color: #82d4a0;
+}
+
+.btn-light-green:hover {
+    background-color: #C3DBD3;
+    color: #01573C;
+}
+
+.btn-outline-light-green {
+    color: #96e2b4;
+    border-color: #ffffff;
+}
+
+.btn-outline-light-green:hover {
+    color: #fff;
+    background-color: #1b4531;
+    border-color: #ffffff;
+}
+
+.styled-heading {
+    color: #01573C;
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #aaa;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.styled-heading:hover {
+    color: #205493;
+    background-color: #e9ecef;
+}
+
+.container {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.form-control:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+.btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+
+@media (max-width: 768px) {
+    .styled-heading {
+        font-size: 20px;
+    }
+}

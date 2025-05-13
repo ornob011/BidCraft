@@ -1,4 +1,4 @@
-package com.dsi.hackathon.controller.companyregistration;
+package com.dsi.hackathon.controller.mvc.companyregistration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,16 +8,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ShareHolderPositionFormController {
-    private static final Logger logger = LoggerFactory.getLogger(ShareHolderPositionFormController.class);
+public class AddressFormController {
+    private static final Logger logger = LoggerFactory.getLogger(AddressFormController.class);
 
-    @GetMapping("/share-holder-position-form")
-    public String shareHolderList(
+    @GetMapping("/company-address-form")
+    public String companyAddressForm(
         Model model,
         @RequestParam("craId") Integer craId
     ) {
-        logger.info("GET controller of 'share-holder-position'");
+        logger.info("GET controller of 'company-address-form'");
 
         return "views/empty";
     }
+
 }

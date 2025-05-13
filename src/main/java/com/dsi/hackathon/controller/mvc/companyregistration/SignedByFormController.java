@@ -1,4 +1,4 @@
-package com.dsi.hackathon.controller.companyregistration;
+package com.dsi.hackathon.controller.mvc.companyregistration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class OtherAttachmentsFormController {
-    private static final Logger logger = LoggerFactory.getLogger(OtherAttachmentsFormController.class);
+public class SignedByFormController {
+    private static final Logger logger = LoggerFactory.getLogger(SignedByFormController.class);
 
-    @GetMapping("/other-attachments-form")
-    public String uploadDocumentsPage(
+    @GetMapping("/signed-by-form")
+    public String signedByForm(
         Model model,
         @RequestParam("craId") Integer craId
     ) {
-        logger.info("GET controller of 'other-attachments'");
+        logger.info("GET controller of 'signed-by-form'");
 
         return "views/empty";
     }

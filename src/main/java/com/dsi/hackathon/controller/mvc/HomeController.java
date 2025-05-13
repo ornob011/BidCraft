@@ -1,4 +1,4 @@
-package com.dsi.hackathon.controller;
+package com.dsi.hackathon.controller.mvc;
 
 import com.dsi.hackathon.util.Utils;
 import org.slf4j.Logger;

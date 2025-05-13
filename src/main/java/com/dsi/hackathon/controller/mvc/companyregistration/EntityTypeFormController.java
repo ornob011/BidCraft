@@ -1,4 +1,4 @@
-package com.dsi.hackathon.controller.companyregistration;
+package com.dsi.hackathon.controller.mvc.companyregistration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

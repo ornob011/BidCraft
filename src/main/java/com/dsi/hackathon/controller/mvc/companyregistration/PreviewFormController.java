@@ -1,4 +1,4 @@
-package com.dsi.hackathon.controller.companyregistration;
+package com.dsi.hackathon.controller.mvc.companyregistration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class AoaFormController {
-    private static final Logger logger = LoggerFactory.getLogger(AoaFormController.class);
+public class PreviewFormController {
+    private static final Logger logger = LoggerFactory.getLogger(PreviewFormController.class);
 
-    @GetMapping("/aoa-form")
-    public String aoaForm(
+    @GetMapping("/preview-form")
+    public String previewForm(
         Model model,
         @RequestParam("craId") Integer craId
     ) {
-        logger.info("GET controller of 'aoa-form'");
+        logger.info("GET controller of 'preview-form'");
 
         return "views/empty";
     }

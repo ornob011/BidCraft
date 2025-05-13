@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/common-head :: common-head}">
+    <title>Dashboard</title>
+</head>
+
+<body>
+<div>
+    <div th:insert="~{fragments/top-menu :: top-menu}"></div>
+
+    <div class="container-fluid bg-light min-vh-100 d-flex flex-column justify-content-center align-items-center text-center py-5">
+
+        <!-- Error Code -->
+        <h1 class="display-1 text-danger fw-bold">500</h1>
+        <p class="h4 text-secondary mb-4">Internal Server Error</p>
+
+        <!-- Back Button -->
+        <a href="/" class="btn btn-success d-flex align-items-center gap-2 px-4 py-2">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+
+        <!-- Optional Background Image (Responsive) -->
+        <div class="mt-5">
+            <img src="/images/error-background.png" alt="Error image" class="img-fluid" style="max-height: 300px;">
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

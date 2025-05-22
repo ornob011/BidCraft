@@ -1,6 +1,5 @@
 package com.dsi.hackathon.entity;
 
-import com.dsi.hackathon.enums.FolderLocation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,12 +26,6 @@ public class FileBucket {
 
     private String path;
 
-    private Boolean hasDeleteRequest;
-
-    @Column(name = "folder_location")
-    @Enumerated(EnumType.STRING)
-    private FolderLocation folderLocation;
-
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -49,8 +42,6 @@ public class FileBucket {
                ", type='" + type + '\'' +
                ", size=" + size +
                ", path='" + path + '\'' +
-               ", hasDeleteRequest=" + hasDeleteRequest +
-               ", folderLocation=" + folderLocation +
                ", createdAt=" + createdAt +
                ", updatedAt=" + updatedAt +
                '}';

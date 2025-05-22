@@ -13,7 +13,7 @@
 </nav>
 <div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
     <div class="row justify-content-center">
-        <div class="col-md-6" style="width: 35vw; height: 50vh;">
+        <div class="col-md-6" style="width: 38vw; min-height: 50vh;">
             <div class="card h-100 border-0 shadow">
                 <div class="row g-0 h-100">
                     <!-- Right side decoration - opposite from signup page -->
@@ -25,7 +25,7 @@
                                 <input type="hidden" name="url_prior_login" th:value="${param.url_prior_login}"/>
 
                                 <div class="mb-3">
-                                    <div th:if="${param.error}" class="alert alert-danger">Invalid email or password.</div>
+                                    <div th:if="${param.error}" class="alert alert-danger" role="alert">Invalid email or password.</div>
                                 </div>
 
                                 <div class="mb-3">

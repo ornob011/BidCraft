@@ -30,15 +30,19 @@ public class PasswordHashService {
         return encoder;
     }
 
-    public String hash(String rawPassword) {
-        if (rawPassword == null || rawPassword.trim().isEmpty()) {
-            throw new IllegalArgumentException("Password must not be null or empty");
+    public String getPasswordHash(String rawValue) {
+        if (rawValue == null || rawValue.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password value must not be null or empty");
         }
 
-        return passwordEncoder.encode(rawPassword);
+        return passwordEncoder.encode(rawValue);
     }
 
-    public boolean matches(String rawPassword, String encodedPassword) {
-        return rawPassword != null && encodedPassword != null && passwordEncoder.matches(rawPassword, encodedPassword);
+    public boolean passwordHashMatches(String rawValue, String hashValue) {
+        if (hashValue == null || rawValue == null) {
+            return false;
+        }
+
+        return passwordEncoder.matches(rawValue, hashValue);
     }
 }

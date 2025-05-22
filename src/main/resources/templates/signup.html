@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common-head :: common-head}">
+    <title>Sign Up</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light-green">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white fw-bold" href="/" style="font-size: 1.5rem;">
+            <i class="fas fa-leaf" style="font-size: 1.5rem;"></i> Spring AI
+        </a>
+    </div>
+</nav>
+
+<div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="row justify-content-center">
+        <div class="col-md-6" style="width: 35vw; height: 50vh;">
+            <!-- Same dimensions as login page, but horizontal layout -->
+            <div class="card h-100 border-0 shadow">
+                <div class="row g-0 h-100">
+                    <!-- Left side decoration -->
+                    <div class="col-md-4 bg-success d-flex flex-column justify-content-center align-items-center text-white p-3">
+                        <i class="fas fa-leaf mb-3" style="font-size: 3rem;"></i>
+                        <h3 class="text-center">Join Our Project</h3>
+                        <p class="text-center small">Create your account to get started</p>
+                        <div class="mt-3">
+                            <span class="badge bg-white text-success p-2">New Account</span>
+                        </div>
+                    </div>
+
+                    <!-- Right side form -->
+                    <div class="col-md-8">
+                        <div class="card-body h-100 d-flex flex-column">
+                            <h3 class="card-title mb-3 text-success"><i class="fas fa-user-plus"></i> Sign Up</h3>
+
+                            <form th:action="@{/signup}" method="post" th:object="${user}" class="flex-grow-1 d-flex flex-column">
+                                <div class="alert alert-danger"
+                                     th:if="${#fields.hasErrors('global')}"
+                                     th:errors="*{global}">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-medium">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope text-success"></i></span>
+                                        <input type="email" class="form-control" th:field="*{email}" id="email" placeholder="Enter your email">
+                                    </div>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label fw-medium">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock text-success"></i></span>
+                                        <input type="password" class="form-control" th:field="*{password}" id="password" placeholder="Create a secure password">
+                                    </div>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <button type="submit" class="btn btn-success w-100 mb-3">
+                                        <i class="fas fa-user-plus"></i> Create Account
+                                    </button>
+
+                                    <div class="text-center">
+                                        <span class="text-muted small">Already have an account?</span>
+                                        <a class="text-decoration-none fw-semibold text-success" th:href="@{/login}">Login</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -21,7 +21,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 512)
     private String password;
 
     @CreationTimestamp

@@ -31,12 +31,15 @@ public class SecurityConfiguration {
         http
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers(
+                    "/signup",
+                    "/login",
                     "/js/**",
                     "/css/**",
                     "/images/**",
                     "/webjars/**",
                     "/logout",
-                    "/error"
+                    "/error",
+                    "/dev/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

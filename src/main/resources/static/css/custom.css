@@ -2,6 +2,19 @@
     background-color: #01573C;
 }
 
+.btn-green {
+    background-color: rgb(25, 135, 84)!important;
+    border-color: #01573C;
+    color: white;
+    opacity: 80%;
+}
+
+.btn-green:hover, .btn-green:focus , .btn-green:active {
+    background-color: rgb(25, 135, 84)!important;
+    border-color: #01573C;
+    color: #E2EDE9;
+}
+
 .btn-light-green {
     background-color: #E2EDE9;
     border-color: #82d4a0;

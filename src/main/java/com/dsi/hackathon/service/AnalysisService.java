@@ -2,6 +2,8 @@ package com.dsi.hackathon.service;
 
 import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.MetaDataLabel;
+import com.dsi.hackathon.enums.UploadedDocumentType;
+import com.dsi.hackathon.prompts.AnalysisPrompts;
 import com.dsi.hackathon.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,21 +21,17 @@ import java.util.stream.Collectors;
 @Service
 public class AnalysisService {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
+
     private final VectorFileService vectorFileService;
-
-    @Value("classpath:/prompts/system/analyzer.st")
-    private Resource analyzerSystemMsg;
-
-    @Value("classpath:/prompts/tor-summarizer.st")
-    private Resource torSummarizerTemplate;
-
     private final PgVectorStore vectorStore;
     private final ChatClient chatClient;
+    private final AnalysisPrompts analysisPrompts;
 
-    public AnalysisService(ChatClient.Builder builder, PgVectorStore vectorStore, VectorFileService vectorFileService) {
-        this.chatClient = builder.build();
+    public AnalysisService(ChatClient.Builder builder, PgVectorStore vectorStore, VectorFileService vectorFileService, AnalysisPrompts analysisPrompts) {
+        this.chatClient = builder.defaultSystem(analysisPrompts.getAnalyzerSystemMsg()).build();
         this.vectorStore = vectorStore;
         this.vectorFileService = vectorFileService;
+        this.analysisPrompts = analysisPrompts;
     }
 
     public String summeryAnalysis(UploadedDocument uploadedDocument) {
@@ -47,43 +45,43 @@ public class AnalysisService {
         // fetch documents form vector store for uploaded document
         String documentStr = vectorStore.similaritySearch(searchRequest).stream()
                                         .map(Document::getText)
-                                        .map(TextUtils::cleanUpText)
                                         .collect(Collectors.joining("\n"));
 
-        // call api with specified prompts
-        String summary;
-        summary = chatClient.prompt()
-                            .system(analyzerSystemMsg)
-                            .user(promptUserSpec ->
-                                promptUserSpec.text(torSummarizerTemplate).param("document", documentStr)
-                            )
-                            .call()
-                            .content();
-
-        return summary;
+        return summeryAnalysis(documentStr, uploadedDocument.getUploadedDocumentType());
     }
 
-    public String summeryAnalysis(MultipartFile file) {
-        logger.info("Generating Summary for file: {}", file.getOriginalFilename());
+    public String summeryAnalysis(Resource file, UploadedDocumentType documentType) {
+        logger.info("Generating Summary for file: {}", file.getFilename());
 
         String documentStr;
-        documentStr = vectorFileService.getPdfDocumentReader(file.getResource())
+        documentStr = vectorFileService.getPdfDocumentReader(file)
                                        .get()
                                        .stream()
                                        .map(Document::getText)
-                                       .map(TextUtils::cleanUpText)
                                        .collect(Collectors.joining("\n"));
+
+        return summeryAnalysis(documentStr, documentType);
+    }
+
+    public String summeryAnalysis(String content, UploadedDocumentType documentType) {
+        logger.info("Generating Summary for string content");
+
+        Resource userMsgResource;
+        userMsgResource = analysisPrompts.getAnalysisTemplate(documentType);
 
         // call api with specified prompts
         String summary;
         summary = chatClient.prompt()
-                            .system(analyzerSystemMsg)
-                            .user(promptUserSpec ->
-                                promptUserSpec.text(torSummarizerTemplate).param("document", documentStr)
-                            )
+                            .user(promptUserSpec -> promptUserSpec.text(userMsgResource)
+                                                                  .param("document", content))
                             .call()
                             .content();
 
         return summary;
     }
+
+    public String summeryAnalysis(MultipartFile file, UploadedDocumentType documentType) {
+        return summeryAnalysis(file.getResource(), documentType);
+    }
+
 }

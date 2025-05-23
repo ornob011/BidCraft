@@ -22,58 +22,26 @@
 
         <div>
             <div class="d-flex flex-wrap">
-                <h5 class="font-size-16 me-3">Uploaded Files</h5>
-                <div class="ms-auto">
-                    <a href="/dashboard" class="mx-xl-5 btn btn-outline-success">
-                        <i class="fas fa-file-upload me-2"></i>Upload new file
-                    </a>
+<!--                <h5 class="font-size-16 me-3">Summary</h5>-->
+                <div class="dropdown w-100">
+                    <button class="btn btn-green font-size-16 fw-bold d-flex flex-row flex-nowrap justify-content-between align-items-center w-100 dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="mx-2" th:text="${summaryFor}"></span>
+                    </button>
+                    <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
+                        <li class="mx-2"><a class="dropdown-item" th:classappend="${documentId == null ? 'btn-light-green':''}" th:href="@{/project/{projectId}/summary(projectId=${projectId})}">Project: <th:block th:text="${project?.name}"></th:block></a></li>
+                        <li class="mx-2" th:each="uploadedDocument : ${uploadedDocuments}"><a class="dropdown-item" th:classappend="${documentId == uploadedDocument?.id ? 'btn-light-green':''}" th:href="@{/project/{projectId}/summary(projectId=${projectId}, documentId=${uploadedDocument?.id})}" th:text="${uploadedDocument?.attachmentName}"></a></li>
+                    </ul>
                 </div>
             </div>
-            <hr class="mt-2">
-            <table class="table table-striped table-light">
-                <thead class="table-success">
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Date modified</th>
-                    <th scope="col">Size</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
-                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> index.html</a></td>
-                    <td>12-10-2020, 09:45</td>
-                    <td>09 KB</td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-outline-success">
-                            <i class="fas fa-brain me-2"></i>
-                            Analyze
-                        </button>
-                        <button type="button" class="btn btn-outline-danger">
-                            <i class="fas fa-trash-alt me-2"></i>
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
-                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> index.html</a></td>
-                    <td>12-10-2020, 09:45</td>
-                    <td>09 KB</td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-outline-success">
-                            <i class="fas fa-brain me-2"></i>
-                            Analyze
-                        </button>
-                        <button type="button" class="btn btn-outline-danger">
-                            <i class="fas fa-trash-alt me-2"></i>
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <hr class="my-3">
+            <div class="card">
+                <div class="card-header fw-bold">
+                    Summary
+                </div>
+                <div class="card-body">
+                    <th:block th:text="${summary}"></th:block>
+                </div>
+            </div>
         </div>
     </div>
 </section>

@@ -33,11 +33,11 @@ public class DevController {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
-    public DevController(
-        PasswordHashService passwordHashService,
-        VectorFileService vectorFileService
+    public DevController(PasswordHashService passwordHashService,
+                         UserRepository userRepository,
+                         ProjectRepository projectRepository,
+                         VectorFileService vectorFileService
     ) {
-    public DevController(PasswordHashService passwordHashService, UserRepository userRepository, ProjectRepository projectRepository) {
         this.passwordHashService = passwordHashService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;

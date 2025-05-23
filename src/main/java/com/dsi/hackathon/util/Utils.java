@@ -1,5 +1,7 @@
 package com.dsi.hackathon.util;
 
+import com.dsi.hackathon.entity.User;
+import com.dsi.hackathon.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -7,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class Utils {
     private Utils() {
@@ -25,6 +28,32 @@ public class Utils {
 
     public static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    public static User getLoggedInUserDetails(Authentication authentication) {
+        User loggedInUserDetails = null;
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)
+            && authentication.isAuthenticated()) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            loggedInUserDetails = userDetails.getUser();
+        }
+
+        return Objects.requireNonNull(
+            loggedInUserDetails,
+            "User details is null in authentication principle. User not logged in properly."
+        );
+    }
+
+    public static User getLoggedInUserDetails() {
+        return getLoggedInUserDetails(getAuthentication());
+    }
+
+    public static Integer getLoggedInUserId() {
+        return Objects.requireNonNull(
+            getLoggedInUserDetails().getId(),
+            "User id is null in authentication principle. User not logged in properly."
+        );
     }
 
     public static String getMessageFromMessageSource(MessageSource messageSource, String msg) {

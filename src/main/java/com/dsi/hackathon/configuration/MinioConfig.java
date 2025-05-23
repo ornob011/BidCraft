@@ -1,26 +1,18 @@
 package com.dsi.hackathon.configuration;
 
+import com.dsi.hackathon.configuration.properties.MinioProperties;
 import io.minio.MinioClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MinioConfig {
-    @Value("${minio.url}")
-    private String minioUrl;
-
-    @Value("${minio.access-key}")
-    private String accessKey;
-
-    @Value("${minio.secret-key}")
-    private String secretKey;
 
     @Bean
-    public MinioClient minioClient() {
+    public MinioClient minioClient(MinioProperties properties) {
         return MinioClient.builder()
-                          .endpoint(minioUrl)
-                          .credentials(accessKey, secretKey)
+                          .endpoint(properties.getUrl())
+                          .credentials(properties.getAccessKey(), properties.getSecretKey())
                           .build();
     }
 }

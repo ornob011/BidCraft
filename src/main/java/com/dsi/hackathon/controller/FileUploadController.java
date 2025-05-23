@@ -19,14 +19,9 @@ public class FileUploadController {
     private FileUploadService uploadService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            FileBucket fileBucket = uploadService.uploadFile(file);
-            return ResponseEntity.ok("File uploaded: {}" + fileBucket);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("File upload failed: " + e.getMessage());
-        }
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
+        FileBucket fileBucket = uploadService.uploadFile(file);
+        return ResponseEntity.ok("File uploaded: {}" + fileBucket);
     }
 
 }

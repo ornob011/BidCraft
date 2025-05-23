@@ -7,7 +7,75 @@
 </head>
 <body>
 <section layout:fragment="contentBody">
-    This is document list page.
+    <div class="container py-5">
+        <div class="d-flex align-items-center mb-5">
+            <i class="fas fa-briefcase fs-1 text-success me-3"></i>
+            <div>
+                <h2 class="mb-0 fw-bold">Dummy Project</h2>
+            </div>
+        </div>
+        <div th:with="tabs='Document List,Analysis,Projects,Restricted',
+        icons='fa-file-upload,fa-brain,fa-folder-open,fa-lock',
+        urls='/document-list/' + ${projectId} + ',/analysis/' + ${projectId} + ',/projects,/restricted'">
+            <div th:replace="fragments/tab-view :: tab-view(${tabs}, ${icons}, ${urls}, 'Document List')"></div>
+        </div>
+
+        <div>
+            <div class="d-flex flex-wrap">
+                <h5 class="font-size-16 me-3">Uploaded Files</h5>
+                <div class="ms-auto">
+                    <a href="/dashboard" class="mx-xl-5 btn btn-outline-success">
+                        <i class="fas fa-file-upload me-2"></i>Upload new file
+                    </a>
+                </div>
+            </div>
+            <hr class="mt-2">
+            <table class="table table-striped table-light">
+                <thead class="table-success">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Date modified</th>
+                    <th scope="col">Size</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
+                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> index.html</a></td>
+                    <td>12-10-2020, 09:45</td>
+                    <td>09 KB</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-success">
+                            <i class="fas fa-brain me-2"></i>
+                            Analyze
+                        </button>
+                        <button type="button" class="btn btn-outline-danger">
+                            <i class="fas fa-trash-alt me-2"></i>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
+                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> index.html</a></td>
+                    <td>12-10-2020, 09:45</td>
+                    <td>09 KB</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-success">
+                            <i class="fas fa-brain me-2"></i>
+                            Analyze
+                        </button>
+                        <button type="button" class="btn btn-outline-danger">
+                            <i class="fas fa-trash-alt me-2"></i>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </section>
 </body>
 </html>

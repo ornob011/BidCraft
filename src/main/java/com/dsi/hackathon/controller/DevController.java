@@ -1,5 +1,7 @@
 package com.dsi.hackathon.controller;
 
+import com.dsi.hackathon.entity.UploadedDocument;
+import com.dsi.hackathon.service.AnalysisService;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.repository.ProjectRepository;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
+import java.util.Objects;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,18 +33,20 @@ public class DevController {
 
     private final PasswordHashService passwordHashService;
     private final VectorFileService vectorFileService;
+    private final AnalysisService analysisService;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
     public DevController(PasswordHashService passwordHashService,
                          UserRepository userRepository,
                          ProjectRepository projectRepository,
-                         VectorFileService vectorFileService
-    ) {
+                         VectorFileService vectorFileService,
+        AnalysisService analysisService) {
         this.passwordHashService = passwordHashService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.vectorFileService = vectorFileService;
+        this.analysisService = analysisService;
     }
 
     @PostMapping("/vector-store/add-file")
@@ -64,6 +69,25 @@ public class DevController {
         String passwordHash = passwordHashService.getPasswordHash(password);
 
         return ResponseEntity.ok(passwordHash);
+    }
+
+    @PostMapping("/document/summary")
+    public ResponseEntity<?> generatePasswordHash(@RequestParam(required = false) Integer uploadedDocumentId,
+                                                  @RequestParam(required = false) MultipartFile file) {
+        logger.info("Generating UploadedDocument({}) summary", uploadedDocumentId);
+
+        if (Objects.nonNull(uploadedDocumentId)) {
+            UploadedDocument uploadedDocument;
+            uploadedDocument = new UploadedDocument();
+            uploadedDocument.setId(uploadedDocumentId);
+            return ResponseEntity.ok(analysisService.summeryAnalysis(uploadedDocument));
+        }
+
+        if (Objects.nonNull(file)) {
+            return ResponseEntity.ok(analysisService.summeryAnalysis(file));
+        }
+
+        return ResponseEntity.ok("Please provide a file or uploaded document id");
     }
 
     @Transactional

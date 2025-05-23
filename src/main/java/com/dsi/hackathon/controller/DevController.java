@@ -1,11 +1,14 @@
 package com.dsi.hackathon.controller;
 
 import com.dsi.hackathon.service.PasswordHashService;
+import com.dsi.hackathon.service.VectorFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/dev")
@@ -13,18 +16,27 @@ public class DevController {
     private static final Logger logger = LoggerFactory.getLogger(DevController.class);
 
     private final PasswordHashService passwordHashService;
+    private final VectorFileService vectorFileService;
 
-    public DevController(PasswordHashService passwordHashService) {
+    public DevController(
+        PasswordHashService passwordHashService,
+        VectorFileService vectorFileService
+    ) {
         this.passwordHashService = passwordHashService;
+        this.vectorFileService = vectorFileService;
     }
 
-    @PostMapping("/vector-store/add-pdf")
-    public String addPdf(@RequestParam("file") MultipartFile file, String filename) {
-        logger.info("add pdf file: {}", filename);
+    @PostMapping("/vector-store/add-file")
+    public String addPdf(@RequestParam("file") MultipartFile file,
+                         @RequestParam(required = false) Map<String, Object> metaData) {
 
+        String filename = file.getOriginalFilename();
+        logger.info("Adding file to vector DB: {}", filename);
 
+        vectorFileService.save(file, metaData);
 
-        return "success";
+        logger.info("Successfully added file to vector DB: {}", filename);
+        return "Successfully added file: " + filename;
     }
 
     @GetMapping("/generate/password-hash")

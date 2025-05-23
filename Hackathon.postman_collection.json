@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "58fb436b-894b-4ca1-a060-90f622f95530",
+		"name": "Hackathon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27573231"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{app_url}}/login?username=user&password=pass",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "user"
+						},
+						{
+							"key": "password",
+							"value": "pass"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add file to vector",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/rashid/Downloads/EOI 46.3.pdf"
+						},
+						{
+							"key": "tag",
+							"value": "rashid::test",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{app_url}}/dev/vector-store/add-file",
+					"host": [
+						"{{app_url}}"
+					],
+					"path": [
+						"dev",
+						"vector-store",
+						"add-file"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

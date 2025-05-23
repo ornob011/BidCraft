@@ -1,6 +1,7 @@
 package com.dsi.hackathon.controller;
 
 import com.dsi.hackathon.entity.UploadedDocument;
+import com.dsi.hackathon.enums.UploadedDocumentType;
 import com.dsi.hackathon.service.AnalysisService;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.User;
@@ -84,7 +85,7 @@ public class DevController {
         }
 
         if (Objects.nonNull(file)) {
-            return ResponseEntity.ok(analysisService.summeryAnalysis(file));
+            return ResponseEntity.ok(analysisService.summeryAnalysis(file, UploadedDocumentType.TERMS_OF_REFERENCE));
         }
 
         return ResponseEntity.ok("Please provide a file or uploaded document id");

@@ -30,6 +30,9 @@ public class MinioInitializer {
             minioClient.makeBucket(
                 MakeBucketArgs.builder().bucket(minioProperties.getBucketName()).build()
             );
+            logger.info("Bucket '{}' created successfully.", minioProperties.getBucketName());
+        } else {
+            logger.info("Bucket '{}' already exists.", minioProperties.getBucketName());
         }
     }
 }

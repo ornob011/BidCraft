@@ -68,42 +68,36 @@ public class DevController {
 
     @Transactional
     @GetMapping("/generate-project-entry")
-    public ResponseEntity<Project> createProjectEntity(@RequestParam("secretCode") String secretCode,
-                                                       @RequestParam("userId") Integer userId) {
+    public ResponseEntity<Project> createProjectEntity(@RequestParam("userId") Integer userId) {
 
-        if(secretCode.equals(Constants.SECRET_CODE)){
+        User user = null;
 
-            User user = null;
-
-            if(userId == null){
-                // 🔍 Fetch users from DB
-                List<User> users = userRepository.findAll();
-                if (users.isEmpty()) {
-                    throw new RuntimeException("No users found in database.");
-                }
-                user = users.get(new Random().nextInt(users.size()));
-            } else {
-                user = userRepository.findById(userId).orElseThrow();
+        if(userId == null){
+            // Fetch users from DB
+            List<User> users = userRepository.findAll();
+            if (users.isEmpty()) {
+                throw new RuntimeException("No users found in database.");
             }
-
-            // 🔧 Create random input data
-            String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-            String name = "AutoName_" + new Random().nextInt(1000);
-            String description = "Generated description at " + LocalDateTime.now();
-
-            // 🛠️ Build entity
-            Project project = new Project();
-            project.setCode(code);
-            project.setName(name);
-            project.setDescription(description);
-            project.setUser(user);
-            project.setCreatedAt(LocalDateTime.now());
-            project.setUpdatedAt(LocalDateTime.now());
-
-            // 💾 Save and return
-            return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
-        }else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            user = users.get(new Random().nextInt(users.size()));
+        } else {
+            user = userRepository.findById(userId).orElseThrow();
         }
+
+        // 🔧 Create random input data
+        String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String name = "AutoName_" + new Random().nextInt(1000);
+        String description = "Generated description at " + LocalDateTime.now();
+
+        // 🛠️ Build entity
+        Project project = new Project();
+        project.setCode(code);
+        project.setName(name);
+        project.setDescription(description);
+        project.setUser(user);
+        project.setCreatedAt(LocalDateTime.now());
+        project.setUpdatedAt(LocalDateTime.now());
+
+        // 💾 Save and return
+        return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
     }
 }

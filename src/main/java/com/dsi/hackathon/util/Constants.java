@@ -11,5 +11,4 @@ public class Constants {
     public static final String FLUSH_ERROR_MSG_CODE = "flushErrorMessage";
     public static final String FLUSH_WARNING_MSG_CODE = "flushWarningMessage";
     public static final String FLUSH_INFO_MSG_CODE = "flushInfoMessage";
-    public static final String SECRET_CODE = "HACKATHON_ROS";
 }

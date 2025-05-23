@@ -5,6 +5,7 @@ import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UserRepository;
 import com.dsi.hackathon.service.PasswordHashService;
+import com.dsi.hackathon.service.VectorFileService;
 import com.dsi.hackathon.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -26,22 +29,32 @@ public class DevController {
     private static final Logger logger = LoggerFactory.getLogger(DevController.class);
 
     private final PasswordHashService passwordHashService;
+    private final VectorFileService vectorFileService;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
+    public DevController(
+        PasswordHashService passwordHashService,
+        VectorFileService vectorFileService
+    ) {
     public DevController(PasswordHashService passwordHashService, UserRepository userRepository, ProjectRepository projectRepository) {
         this.passwordHashService = passwordHashService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
+        this.vectorFileService = vectorFileService;
     }
 
-    @PostMapping("/vector-store/add-pdf")
-    public String addPdf(@RequestParam("file") MultipartFile file, String filename) {
-        logger.info("add pdf file: {}", filename);
+    @PostMapping("/vector-store/add-file")
+    public String addPdf(@RequestParam("file") MultipartFile file,
+                         @RequestParam(required = false) Map<String, Object> metaData) {
 
+        String filename = file.getOriginalFilename();
+        logger.info("Adding file to vector DB: {}", filename);
 
+        vectorFileService.save(file, metaData);
 
-        return "success";
+        logger.info("Successfully added file to vector DB: {}", filename);
+        return "Successfully added file: " + filename;
     }
 
     @GetMapping("/generate/password-hash")

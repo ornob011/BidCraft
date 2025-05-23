@@ -4,10 +4,13 @@ import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -56,6 +59,10 @@ public class Utils {
         );
     }
 
+    public static String getMessageFromMessageSource(MessageSource messageSource, MessageSourceResolvable messageSourceResolvable){
+        return messageSource.getMessage(messageSourceResolvable, Locale.getDefault());
+    }
+
     public static String getMessageFromMessageSource(MessageSource messageSource, String msg) {
         return messageSource.getMessage(msg, null, Locale.getDefault());
     }
@@ -84,4 +91,12 @@ public class Utils {
         request.getSession().setAttribute(Constants.FLUSH_WARNING_MSG_CODE, getMessageFromMessageSource(messageSource, msgCode));
     }
 
+    public static List<String> getErrorStrList(MessageSource messageSource, BindingResult bindingResult) {
+        List<String> errors;
+        errors = bindingResult.getAllErrors()
+                              .stream()
+                              .map(error -> Utils.getMessageFromMessageSource(messageSource, error))
+                              .toList();
+        return errors;
+    }
 }

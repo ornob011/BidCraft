@@ -30,7 +30,7 @@ public class VectorFileService {
 
     public void save(MultipartFile file, Map<String, Object> metaData) {
         Resource resource = file.getResource();
-        DocumentReader documentReader = getTikaDocumentReader(resource);
+        DocumentReader documentReader = getPdfDocumentReader(resource);
 
         List<Document> documentList = documentReader.read();
 
@@ -47,7 +47,7 @@ public class VectorFileService {
         return new TikaDocumentReader(resource);
     }
 
-    private DocumentReader getPdfDocumentReader(Resource resource) {
+    public DocumentReader getPdfDocumentReader(Resource resource) {
         PdfDocumentReaderConfig config;
         config = PdfDocumentReaderConfig.builder()
                                         .withPageExtractedTextFormatter(

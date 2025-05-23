@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head th:replace="~{fragments/common-head :: common-head}">
-    <title>Dashboard</title>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/common-layout}">
+<head>
+    <title>Document List</title>
 </head>
-
 <body>
-<div>
-    <div th:insert="~{fragments/top-menu :: top-menu}"></div>
-
+<section layout:fragment="contentBody">
     <div class="container py-5">
         <!-- Header with Bootstrap styling -->
         <div class="row mb-4">
@@ -308,7 +307,6 @@
             </div>
         </div>
     </div>
-</div>
-
+</section>
 </body>
 </html>

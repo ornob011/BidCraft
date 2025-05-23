@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.document.DocumentReader;
 import org.springframework.ai.document.DocumentTransformer;
+import org.springframework.ai.reader.ExtractedTextFormatter;
+import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
+import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
@@ -27,7 +30,7 @@ public class VectorFileService {
 
     public void save(MultipartFile file, Map<String, Object> metaData) {
         Resource resource = file.getResource();
-        DocumentReader documentReader = new TikaDocumentReader(resource);
+        DocumentReader documentReader = getPdfDocumentReader(resource);
 
         List<Document> documentList = documentReader.read();
 
@@ -38,5 +41,24 @@ public class VectorFileService {
         DocumentTransformer transformer = new TokenTextSplitter();
         vectorStore.accept(transformer.apply(documentList));
         logger.info("Saved vector file: {}", resource.getFilename());
+    }
+
+    private DocumentReader getTikaDocumentReader(Resource resource) {
+        return new TikaDocumentReader(resource);
+    }
+
+    public DocumentReader getPdfDocumentReader(Resource resource) {
+        PdfDocumentReaderConfig config;
+        config = PdfDocumentReaderConfig.builder()
+                                        .withPageExtractedTextFormatter(
+                                            ExtractedTextFormatter.builder()
+                                                                  .withNumberOfBottomTextLinesToDelete(0)
+                                                                  .withNumberOfTopPagesToSkipBeforeDelete(0)
+                                                                  .build()
+                                        )
+                                        .withPagesPerDocument(1)
+                                        .build();
+
+        return new PagePdfDocumentReader(resource, config);
     }
 }

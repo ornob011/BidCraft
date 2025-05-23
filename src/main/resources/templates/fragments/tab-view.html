@@ -1,0 +1,12 @@
+<div class="mb-3" th:fragment="tab-view(tabNames, iconList, urls, activeTab)" xmlns:with="http://www.w3.org/1999/xhtml">
+    <ul class="nav nav-tabs mb-3 border-bottom border-success-subtle">
+        <li class="nav-item" th:each="tab, iterStat : ${tabNames.split(',')}">
+            <a class="nav-link" th:with="url=${urls.split(',')[iterStat.index]}"
+               th:classappend="${activeTab == tab ? 'active bg-success text-white fw-semibold' :
+               'text-dark border border-1 border-bottom-0 border-start-0'}" th:href="@{${url}}">
+                <i class="fas me-1" th:classappend="${iconList.split(',')[iterStat.index]}"></i>
+                [[${tab}]]
+            </a>
+        </li>
+    </ul>
+</div>

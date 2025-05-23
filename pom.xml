@@ -125,6 +125,16 @@
             <artifactId>jquery-validation</artifactId>
             <version>1.20.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootbox</artifactId>
+            <version>5.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui</artifactId>
+            <version>1.14.1</version>
+        </dependency>
     </dependencies>
 	<dependencyManagement>
 		<dependencies>

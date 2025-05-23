@@ -83,12 +83,12 @@ public class DevController {
             user = userRepository.findById(userId).orElseThrow();
         }
 
-        // 🔧 Create random input data
+        // Create random input data
         String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         String name = "AutoName_" + new Random().nextInt(1000);
         String description = "Generated description at " + LocalDateTime.now();
 
-        // 🛠️ Build entity
+        // Build entity
         Project project = new Project();
         project.setCode(code);
         project.setName(name);
@@ -97,7 +97,7 @@ public class DevController {
         project.setCreatedAt(LocalDateTime.now());
         project.setUpdatedAt(LocalDateTime.now());
 
-        // 💾 Save and return
+        // Save and return
         return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
     }
 }

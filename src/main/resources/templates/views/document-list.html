@@ -80,27 +80,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
-                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> index.html</a></td>
-                    <td>12-10-2020, 09:45</td>
-                    <td>09 KB</td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-outline-success">
-                            <i class="fas fa-brain me-2"></i>
-                            Analyze
-                        </button>
-                        <button type="button" class="btn btn-outline-danger">
-                            <i class="fas fa-trash-alt me-2"></i>
-                            Delete
-                        </button>
-                    </td>
-                </tr>
                 <tr th:each="file : ${files}">
                     <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
-                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.attachmentName}]]</a></td>
+                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.name}]]</a></td>
                     <td>[[${file.updatedAt}]]</td>
-                    <td>[[${file.fileBucket.size}]]</td>
+                    <td>[[${file.size}]]</td>
                     <td class="text-center">
                         <button type="button" class="btn btn-outline-success">
                             <i class="fas fa-brain me-2"></i>
@@ -119,6 +103,42 @@
 </section>
 </body>
 <script layout:fragment="localJsCodeBlock" type="text/javascript" th:inline="javascript">
+    function refreshFileTable(projectId) {
+        $.ajax({
+            url: '/get-files/' + projectId,
+            type: 'GET',
+            success: function (files) {
+                console.log(files);
+                const $tbody = $('tbody');
+                $tbody.empty(); // Clear the table
+
+                files.forEach(function (file) {
+                    $tbody.append(`
+                    <tr>
+                        <td><a href="javascript:void(0);" class="text-dark fw-medium">
+                            <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
+                            ${file.name}</a>
+                        </td>
+                        <td>${file.updatedAt}</td>
+                        <td>${file.size || '-'}</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-outline-success">
+                                <i class="fas fa-brain me-2"></i> Analyze
+                            </button>
+                            <button type="button" class="btn btn-outline-danger">
+                                <i class="fas fa-trash-alt me-2"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `);
+                });
+            },
+            error: function (xhr, status, error) {
+                alert('Error refreshing table: ' + error);
+            }
+        });
+    }
+
     $(document).ready(function () {
         $('#uploadForm').submit(function (e) {
             console.log("entered here")
@@ -141,31 +161,7 @@
                     $('#myModal').modal('hide');
 
                     // Refresh the table
-                    $.get('/get-files/' + projectId, function (files) {
-                        const $tbody = $('tbody');
-                        $tbody.empty(); // Clear the table
-
-                        files.forEach(function (file) {
-                            $tbody.append(`
-                            <tr>
-                                <td><a href="javascript:void(0);" class="text-dark fw-medium">
-                                    <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
-                                    ${file.attachmentName}</a>
-                                </td>
-                                <td>${file.updatedAt}</td>
-                                <td>${file.fileBucket?.size || '-'}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-outline-success">
-                                        <i class="fas fa-brain me-2"></i> Analyze
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger">
-                                        <i class="fas fa-trash-alt me-2"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        `);
-                        });
-                    });
+                    refreshFileTable(projectId);
                 },
                 error: function (xhr, status, error) {
                     alert('Error uploading file: ' + error);

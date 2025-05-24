@@ -1,13 +1,16 @@
 package com.dsi.hackathon.controller;
 
+import com.dsi.hackathon.configuration.properties.MinioProperties;
 import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.UploadedDocumentType;
+import com.dsi.hackathon.repository.UploadedDocumentRepository;
 import com.dsi.hackathon.service.AnalysisService;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UserRepository;
 import com.dsi.hackathon.service.PasswordHashService;
+import com.dsi.hackathon.service.VectorDocumentQueryService;
 import com.dsi.hackathon.service.VectorFileService;
 import com.dsi.hackathon.util.Constants;
 import org.slf4j.Logger;
@@ -20,6 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 import java.util.Objects;
+
+import io.minio.MinioClient;
+import io.minio.RemoveObjectArgs;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -37,17 +43,27 @@ public class DevController {
     private final AnalysisService analysisService;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
+    private final MinioClient minioClient;
+    private final MinioProperties minioProperties;
+    private final UploadedDocumentRepository uploadedDocumentRepository;
+    private final VectorDocumentQueryService vectorDocumentQueryService;
 
     public DevController(PasswordHashService passwordHashService,
                          UserRepository userRepository,
                          ProjectRepository projectRepository,
                          VectorFileService vectorFileService,
-        AnalysisService analysisService) {
+                         AnalysisService analysisService,
+                         MinioClient minioClient,
+                         MinioProperties minioProperties, UploadedDocumentRepository uploadedDocumentRepository, VectorDocumentQueryService vectorDocumentQueryService) {
         this.passwordHashService = passwordHashService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.vectorFileService = vectorFileService;
         this.analysisService = analysisService;
+        this.minioClient = minioClient;
+        this.minioProperties = minioProperties;
+        this.uploadedDocumentRepository = uploadedDocumentRepository;
+        this.vectorDocumentQueryService = vectorDocumentQueryService;
     }
 
     @PostMapping("/vector-store/add-file")
@@ -70,6 +86,29 @@ public class DevController {
         String passwordHash = passwordHashService.getPasswordHash(password);
 
         return ResponseEntity.ok(passwordHash);
+    }
+
+    @Transactional
+    @GetMapping("/delete-documents/{projectId}")
+    public ResponseEntity<?> deleteAllDocuments(@PathVariable Integer projectId) {
+        List<UploadedDocument> documents = uploadedDocumentRepository.findByProjectId(projectId);
+
+        for (UploadedDocument document : documents) {
+            try {
+                minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                                    .bucket(minioProperties.getBucketName())
+                                    .object(document.getFileBucket().getName())
+                                    .build()
+                );
+                uploadedDocumentRepository.delete(document);
+            } catch (Exception e) {
+                logger.error("Failed to delete document: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete documents");
+            }
+        }
+
+        return ResponseEntity.ok("Successfully deleted all documents");
     }
 
     @PostMapping("/document/summary")
@@ -124,5 +163,12 @@ public class DevController {
 
         // Save and return
         return new ResponseEntity<>(projectRepository.save(project), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/document-exists/{documentId}")
+    public ResponseEntity<Boolean> isDocumentExistsInVectorDB(@PathVariable Integer documentId) {
+        UploadedDocument document = uploadedDocumentRepository.findById(documentId)
+                                                              .orElseThrow(() -> new RuntimeException("Document not found"));
+        return ResponseEntity.ok(!vectorDocumentQueryService.getDocuments(document).isEmpty());
     }
 }

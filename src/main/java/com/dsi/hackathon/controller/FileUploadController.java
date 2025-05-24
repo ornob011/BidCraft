@@ -1,5 +1,6 @@
 package com.dsi.hackathon.controller;
 
+import com.dsi.hackathon.dto.UploadedDocumentDto;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.UploadedDocumentType;
@@ -49,8 +50,8 @@ public class FileUploadController {
     }
     
     @GetMapping("/get-files/{projectId}")
-    public ResponseEntity<List<UploadedDocument>> getFiles(@PathVariable("projectId") Integer projectId) {
-        List<UploadedDocument> documents = uploadedDocumentRepository.findByProjectId(projectId);
+    public ResponseEntity<List<UploadedDocumentDto>> getFiles(@PathVariable("projectId") Integer projectId) {
+        List<UploadedDocumentDto> documents = uploadedDocumentRepository.findUploadedDocumentByProjectId(projectId);
         return ResponseEntity.ok(documents);
     }
 

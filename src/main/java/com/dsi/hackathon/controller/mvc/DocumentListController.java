@@ -43,7 +43,7 @@ public class DocumentListController {
 
         model.addAttribute("projectId", projectId);
         model.addAttribute("documentTypes", UploadedDocumentType.values());
-        model.addAttribute("files", uploadedDocumentRepository.findByProjectId(projectId));
+        model.addAttribute("files", uploadedDocumentRepository.findUploadedDocumentByProjectId(projectId));
 
         return "views/document-list";
     }

@@ -116,7 +116,7 @@ public class FileUploadService {
             metaData.put(MetaDataLabel.DOC_NAME.name(), type.name());
             metaData.put(MetaDataLabel.UPLOADED_DOC_ID.name(), uploadedDocument.getId());
 
-            vectorFileService.save(file, metaData);
+//            vectorFileService.save(file, metaData);
         } catch (Exception e) {
             // Rollback MinIO upload if DB save fails
             try {
@@ -131,5 +131,7 @@ public class FileUploadService {
             throw e; // rethrow the original exception
         }
     }
+    
+    
 
 }

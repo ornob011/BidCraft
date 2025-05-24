@@ -24,6 +24,7 @@ public class FileBucket {
 
     private Float size;
 
+    @Column(length = 1000)
     private String path;
 
     @CreationTimestamp

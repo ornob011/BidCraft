@@ -24,10 +24,50 @@
             <div class="d-flex flex-wrap">
                 <h5 class="font-size-16 me-3">Uploaded Files</h5>
                 <div class="ms-auto">
-                    <a href="/dashboard" class="mx-xl-5 btn btn-outline-success">
+                    <!-- Trigger button -->
+                    <button type="button" class="btn mx-xl-5 btn-outline-success" data-bs-toggle="modal" data-bs-target="#myModal">
                         <i class="fas fa-file-upload me-2"></i>Upload new file
-                    </a>
+                    </button>
                 </div>
+<!--                Modal starts here-->
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-light-green text-white">
+                                <h5 class="modal-title" id="myModalLabel">Upload Document</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form id="uploadForm" th:action="${'/upload/' + projectId}" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="projectId" value="${projectId}">
+                            <div class="modal-body p-4 bg-light">
+
+                                <!-- Select dropdown -->
+                                <div class="mb-3">
+                                    <label for="type" class="form-label">Document Type</label>
+                                    <select class="form-select" id="type" name="type" required>
+                                        <option th:each="documentType : ${documentTypes}"
+                                                th:value="${documentType.name()}"
+                                                th:text="${documentType.displayName}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- File input -->
+                                <div class="mb-3">
+                                    <label for="file" class="form-label">Select File</label>
+                                    <input class="form-control" type="file" id="file" name="file" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Upload</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--                Modal ends here-->
             </div>
             <hr class="mt-2">
             <table class="table table-striped table-light">
@@ -56,11 +96,11 @@
                         </button>
                     </td>
                 </tr>
-                <tr>
+                <tr th:each="file : ${files}">
                     <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
-                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> index.html</a></td>
-                    <td>12-10-2020, 09:45</td>
-                    <td>09 KB</td>
+                        class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.attachmentName}]]</a></td>
+                    <td>[[${file.updatedAt}]]</td>
+                    <td>[[${file.fileBucket.size}]]</td>
                     <td class="text-center">
                         <button type="button" class="btn btn-outline-success">
                             <i class="fas fa-brain me-2"></i>
@@ -78,4 +118,61 @@
     </div>
 </section>
 </body>
+<script layout:fragment="localJsCodeBlock" type="text/javascript" th:inline="javascript">
+    $(document).ready(function () {
+        $('#uploadForm').submit(function (e) {
+            console.log("entered here")
+            e.preventDefault(); // Prevent normal form submission
+
+            const formData = new FormData(this);
+            const projectId = [[${projectId}]]; // Read projectId before the AJAX call
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'), // Should match a @PostMapping on the server
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (response) {
+                    // reset form data
+                    $('#uploadForm')[0].reset();
+                    // Hide the modal after successful upload
+                    $('#myModal').modal('hide');
+
+                    // Refresh the table
+                    $.get('/get-files/' + projectId, function (files) {
+                        const $tbody = $('tbody');
+                        $tbody.empty(); // Clear the table
+
+                        files.forEach(function (file) {
+                            $tbody.append(`
+                            <tr>
+                                <td><a href="javascript:void(0);" class="text-dark fw-medium">
+                                    <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
+                                    ${file.attachmentName}</a>
+                                </td>
+                                <td>${file.updatedAt}</td>
+                                <td>${file.fileBucket?.size || '-'}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-success">
+                                        <i class="fas fa-brain me-2"></i> Analyze
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger">
+                                        <i class="fas fa-trash-alt me-2"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                        });
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Error uploading file: ' + error);
+                }
+            });
+        });
+    });
+
+</script>
 </html>

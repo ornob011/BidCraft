@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       POSTGRES_DB: hackathon
-      POSTGRES_USER: hackathon
-      POSTGRES_PASSWORD: uskgh
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 0705
     ports:
       - "5444:5432"

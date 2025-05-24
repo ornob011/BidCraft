@@ -6,6 +6,7 @@ public enum MetaDataLabel {
     FILENAME,
     DOC_NAME,
     PROJECT_ID,
+    PROJECT_NAME,
     UPLOADED_DOC_ID,
     ;
 

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class AnalysisService {
@@ -29,34 +31,97 @@ public class AnalysisService {
 
     @Transactional
     public Analysis analyse(Integer analysisId) {
-        return analyseUploadedDocument(analysisId, Boolean.FALSE);
-    }
+        Analysis analysis = analysisRepository.findByIdWithLock(analysisId).orElseThrow(DataNotFoundException::new);
 
-    @Transactional
-    public Analysis analyseUploadedDocument(Integer analysisId, Boolean reAnalyze) {
-        Analysis analysis = analysisRepository.findAllByIdWithLock(analysisId).orElseThrow(DataNotFoundException::new);
-        Objects.requireNonNull(analysis.getUploadedDocument(), "Uploaded document is null for analysis :" + analysisId);
-
-        if (Boolean.TRUE.equals(analysis.getIsAnalyzed()) && !Boolean.TRUE.equals(reAnalyze)) {
+        // For single document analysis
+        if (Objects.nonNull(analysis.getUploadedDocument())) {
+            analyseUploadedDocument(analysis, Boolean.FALSE);
             return analysis;
         }
 
-        Resource documentResource;
-        documentResource = fileUploadService.getFileResource(analysis.getUploadedDocument().getFileBucket());
+        // For project analysis
+        analyzeProject(analysis, Boolean.FALSE);
+
+        return analysis;
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    @Transactional
+    public boolean analyzeProject(Analysis analysis, Boolean reAnalyze) {
+        Project project = analysis.getProject();
+
+        if (Objects.nonNull(analysis.getUploadedDocument())) {
+            throw new IllegalArgumentException("Analysis(%d) not targeted for project".formatted(analysis.getId()));
+        }
+
+        logger.info("Analyzing Project({}) Analysis({})", project.getId(), analysis.getId());
+
+        List<Analysis> analysisList;
+        analysisList = analysisRepository.findByUploadedDocumentInWithLock(project.getUploadedDocuments());
+
+        boolean isProjectUpdated = false;
+        for (Analysis documentAnalysis : analysisList) {
+            boolean isUpdated = analyseUploadedDocument(documentAnalysis, Boolean.FALSE);
+            if (isUpdated) {
+                isProjectUpdated = true;
+            }
+        }
+
+        if (!isProjectUpdated && Boolean.TRUE.equals(analysis.getIsAnalyzed()) && !Boolean.TRUE.equals(reAnalyze)) {
+            return false;
+        }
+
+        // todo:: generate summary for project
+        String documentAnalysisSummary = analysisList.stream()
+                                              .map(Analysis::getSummary)
+                                              .map(documentSummary ->
+                                                  "####### %s #######\n"
+                                                      .formatted(
+                                                          analysis.getUploadedDocument()
+                                                                  .getUploadedDocumentType()
+                                                                  .getDisplayName()
+                                                      )
+                                                  + documentSummary
+                                                  + "#####################"
+                                              ).collect(Collectors.joining("\n\n"));
 
         String summary;
-        summary = summaryAnalysisService.summeryAnalysis(
-            documentResource,
-            analysis.getUploadedDocument().getUploadedDocumentType()
-        );
-
+        summary = summaryAnalysisService.summeryAnalysis(documentAnalysisSummary, null);
         analysis.setSummary(summary);
 
-        // todo:: generate analysis details
+        // todo:: generate analysis details for project
 
         analysis.setIsAnalyzed(Boolean.TRUE);
         analysis.setAnalyzedAt(LocalDateTime.now());
-        return analysisRepository.save(analysis);
+        return true;
+    }
+
+    @Transactional
+    public boolean analyseUploadedDocument(Analysis analysis, Boolean reAnalyze) {
+        UploadedDocument uploadedDocument = analysis.getUploadedDocument();
+
+        if (Objects.isNull(uploadedDocument)) {
+            throw new IllegalArgumentException("Analysis(%d) not targeted for UploadedDocument".formatted(analysis.getId()));
+        }
+
+        logger.info("Analyzing UploadedDocument({}) Analysis({})", uploadedDocument.getId(), analysis.getId());
+
+        if (Boolean.TRUE.equals(analysis.getIsAnalyzed()) && !Boolean.TRUE.equals(reAnalyze)) {
+            return false;
+        }
+
+        Resource documentResource;
+        documentResource = fileUploadService.getFileResource(uploadedDocument.getFileBucket());
+
+        String summary;
+        summary = summaryAnalysisService.summeryAnalysis(documentResource, uploadedDocument.getUploadedDocumentType());
+        analysis.setSummary(summary);
+
+        // todo:: generate analysis details for document
+
+        analysis.setIsAnalyzed(Boolean.TRUE);
+        analysis.setAnalyzedAt(LocalDateTime.now());
+        return true;
     }
 
     @Transactional

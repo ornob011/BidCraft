@@ -14,4 +14,6 @@ You are an expert analyst and content summarizer. Given the provided text/docume
    - Keep the summary concise but rich in relevant details for someone who wants an in-depth understanding without reading the full text.
 
 Text/Document:
+---
 {document}
+---

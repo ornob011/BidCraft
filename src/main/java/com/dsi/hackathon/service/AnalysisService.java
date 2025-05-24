@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class AnalysisService {
@@ -71,10 +72,27 @@ public class AnalysisService {
         }
 
         // todo:: generate summary for project
+        String documentAnalysisSummary = analysisList.stream()
+                                              .map(Analysis::getSummary)
+                                              .map(documentSummary ->
+                                                  "####### %s #######\n"
+                                                      .formatted(
+                                                          analysis.getUploadedDocument()
+                                                                  .getUploadedDocumentType()
+                                                                  .getDisplayName()
+                                                      )
+                                                  + documentSummary
+                                                  + "#####################"
+                                              ).collect(Collectors.joining("\n\n"));
+
+        String summary;
+        summary = summaryAnalysisService.summeryAnalysis(documentAnalysisSummary, null);
+        analysis.setSummary(summary);
+
         // todo:: generate analysis details for project
 
-//        analysis.setIsAnalyzed(Boolean.TRUE);
-//        analysis.setAnalyzedAt(LocalDateTime.now());
+        analysis.setIsAnalyzed(Boolean.TRUE);
+        analysis.setAnalyzedAt(LocalDateTime.now());
         return true;
     }
 
@@ -96,11 +114,7 @@ public class AnalysisService {
         documentResource = fileUploadService.getFileResource(uploadedDocument.getFileBucket());
 
         String summary;
-        summary = summaryAnalysisService.summeryAnalysis(
-            documentResource,
-            uploadedDocument.getUploadedDocumentType()
-        );
-
+        summary = summaryAnalysisService.summeryAnalysis(documentResource, uploadedDocument.getUploadedDocumentType());
         analysis.setSummary(summary);
 
         // todo:: generate analysis details for document

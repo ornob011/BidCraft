@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @Setter
 @Getter
@@ -18,13 +21,20 @@ public class Analysis {
     @Column(insertable = false, updatable = false)
     private Integer id;
 
-    @Lob
-    @Column(nullable = false)
-    private String summary;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uploaded_document_id")
+    private UploadedDocument uploadedDocument;
+
+    @Lob
+    @Column
+    private String summary;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private HashMap<String, Object> mapValue = new HashMap<>();
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

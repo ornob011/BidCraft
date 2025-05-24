@@ -39,7 +39,7 @@
                     Summary
                 </div>
                 <div class="card-body">
-                    <th:block th:text="${summary}"></th:block>
+                    <th:block th:text="${analysis?.summary ?: 'Summery not available'}"></th:block>
                 </div>
             </div>
         </div>

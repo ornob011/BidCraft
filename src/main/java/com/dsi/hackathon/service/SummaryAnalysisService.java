@@ -4,14 +4,12 @@ import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.MetaDataLabel;
 import com.dsi.hackathon.enums.UploadedDocumentType;
 import com.dsi.hackathon.prompts.AnalysisPrompts;
-import com.dsi.hackathon.util.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,15 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.stream.Collectors;
 
 @Service
-public class AnalysisService {
-    private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
+public class SummaryAnalysisService {
+    private static final Logger logger = LoggerFactory.getLogger(SummaryAnalysisService.class);
 
     private final VectorFileService vectorFileService;
     private final PgVectorStore vectorStore;
     private final ChatClient chatClient;
     private final AnalysisPrompts analysisPrompts;
 
-    public AnalysisService(ChatClient.Builder builder, PgVectorStore vectorStore, VectorFileService vectorFileService, AnalysisPrompts analysisPrompts) {
+    public SummaryAnalysisService(ChatClient.Builder builder, PgVectorStore vectorStore, VectorFileService vectorFileService, AnalysisPrompts analysisPrompts) {
         this.chatClient = builder.defaultSystem(analysisPrompts.getAnalyzerSystemMsg()).build();
         this.vectorStore = vectorStore;
         this.vectorFileService = vectorFileService;

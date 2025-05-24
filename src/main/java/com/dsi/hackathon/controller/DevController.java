@@ -2,14 +2,13 @@ package com.dsi.hackathon.controller;
 
 import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.UploadedDocumentType;
-import com.dsi.hackathon.service.AnalysisService;
+import com.dsi.hackathon.service.SummaryAnalysisService;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UserRepository;
 import com.dsi.hackathon.service.PasswordHashService;
 import com.dsi.hackathon.service.VectorFileService;
-import com.dsi.hackathon.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 import java.util.Objects;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -34,7 +32,7 @@ public class DevController {
 
     private final PasswordHashService passwordHashService;
     private final VectorFileService vectorFileService;
-    private final AnalysisService analysisService;
+    private final SummaryAnalysisService summaryAnalysisService;
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
@@ -42,12 +40,12 @@ public class DevController {
                          UserRepository userRepository,
                          ProjectRepository projectRepository,
                          VectorFileService vectorFileService,
-        AnalysisService analysisService) {
+        SummaryAnalysisService summaryAnalysisService) {
         this.passwordHashService = passwordHashService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.vectorFileService = vectorFileService;
-        this.analysisService = analysisService;
+        this.summaryAnalysisService = summaryAnalysisService;
     }
 
     @PostMapping("/vector-store/add-file")
@@ -81,11 +79,11 @@ public class DevController {
             UploadedDocument uploadedDocument;
             uploadedDocument = new UploadedDocument();
             uploadedDocument.setId(uploadedDocumentId);
-            return ResponseEntity.ok(analysisService.summeryAnalysis(uploadedDocument));
+            return ResponseEntity.ok(summaryAnalysisService.summeryAnalysis(uploadedDocument));
         }
 
         if (Objects.nonNull(file)) {
-            return ResponseEntity.ok(analysisService.summeryAnalysis(file, UploadedDocumentType.TERMS_OF_REFERENCE));
+            return ResponseEntity.ok(summaryAnalysisService.summeryAnalysis(file, UploadedDocumentType.TERMS_OF_REFERENCE));
         }
 
         return ResponseEntity.ok("Please provide a file or uploaded document id");

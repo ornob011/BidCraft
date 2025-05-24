@@ -1,11 +1,12 @@
 package com.dsi.hackathon.controller.mvc;
 
+import com.dsi.hackathon.entity.Analysis;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.exception.DataNotFoundException;
+import com.dsi.hackathon.repository.AnalysisRepository;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
-import com.dsi.hackathon.service.AnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,23 +22,22 @@ public class DocumentAnalysisController {
 
     private static final Logger logger = LoggerFactory.getLogger(DocumentAnalysisController.class);
     private final UploadedDocumentRepository uploadedDocumentRepository;
-    private final AnalysisService analysisService;
     private final ProjectRepository projectRepository;
+    private final AnalysisRepository analysisRepository;
 
-    public DocumentAnalysisController(UploadedDocumentRepository uploadedDocumentRepository, AnalysisService analysisService, ProjectRepository projectRepository) {
+    public DocumentAnalysisController(UploadedDocumentRepository uploadedDocumentRepository, ProjectRepository projectRepository, AnalysisRepository analysisRepository) {
         this.uploadedDocumentRepository = uploadedDocumentRepository;
-        this.analysisService = analysisService;
         this.projectRepository = projectRepository;
+        this.analysisRepository = analysisRepository;
     }
 
     @GetMapping("/project/{projectId}/summary")
     public String getDocumentList(@PathVariable("projectId") Integer projectId,
                                   @RequestParam(required = false) Integer documentId,
                                   Model model) {
-
-        String summary = "Summery not available";
+        logger.info("Viewing analysis for Project({}) and UploadedDocument({})", projectId, documentId);
         String summaryFor;
-
+        Analysis analysis;
         Project project;
         project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
 
@@ -50,13 +50,25 @@ public class DocumentAnalysisController {
                 uploadedDocument.getAttachmentName()
             );
 
-            // todo:: check if summary for document exists
-            // todo:: generate summary if not available for document
+            analysis = analysisRepository.findByProjectIdAndUploadedDocumentId(projectId, documentId)
+                                         .orElse(null);
+
+            if (Objects.isNull(analysis)) {
+                // todo create analysis
+                analysis = new Analysis();
+            }
+
         } else {
             summaryFor = "Project: %s".formatted(project.getName());
 
-            // todo:: check if summary for project exists
-            // todo:: generate summary if not available for project
+            analysis = analysisRepository.findByProjectIdAndUploadedDocumentNull(projectId)
+                                         .orElse(null);
+
+            if (Objects.isNull(analysis)) {
+                // todo create analysis
+                analysis = new Analysis();
+            }
+
         }
 
         model.addAttribute("project", project);
@@ -64,7 +76,7 @@ public class DocumentAnalysisController {
         model.addAttribute("documentId", documentId);
         model.addAttribute("summaryFor", summaryFor);
         model.addAttribute("uploadedDocuments", project.getUploadedDocuments());
-        model.addAttribute("summary", summary);
+        model.addAttribute("analysis", analysis);
         return "views/document-analysis";
     }
 }

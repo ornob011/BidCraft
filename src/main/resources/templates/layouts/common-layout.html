@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head th:replace="~{fragments/common-head :: common-head}">
 </head>
 
@@ -11,8 +11,12 @@
 <!--    common layout content body  -->
     </div>
 </div>
+
+<!-- Custom js block -->
+<span layout:fragment="customJsImportBlock" th:remove="tag"></span>
+
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
-    console.log("SMNLOG :: Loaded");
 </script>
+
 </body>
 </html>

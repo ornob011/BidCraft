@@ -2,6 +2,7 @@ package com.dsi.hackathon.service;
 
 import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.repository.UserRepository;
+import com.dsi.hackathon.security.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,9 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                                   .orElseThrow(() -> new UsernameNotFoundException("No user found with email: " + email));
 
-        return org.springframework.security.core.userdetails.User
-            .withUsername(user.getEmail())
-            .password(user.getPassword())
-            .build();
+        return new CustomUserDetails(user);
     }
 }

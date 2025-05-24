@@ -7,7 +7,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 public class UploadedDocumentDto {
     private Integer id;
     private String name;
@@ -15,4 +14,32 @@ public class UploadedDocumentDto {
     private LocalDateTime updatedAt;
     private Float size;
     private String path;
+    private String readableSize;
+
+    public UploadedDocumentDto(Integer id,
+                               String name,
+                               UploadedDocumentType type,
+                               LocalDateTime updatedAt,
+                               Float size,
+                               String path) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.updatedAt = updatedAt;
+        this.size = size;
+        this.path = path;
+    }
+
+    public String getReadableSize() {
+        String[] units = {"Bytes", "KB", "MB", "GB", "TB"};
+        double size = this.size; // assuming size is in bytes
+        int unitIndex = 0;
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex++;
+        }
+        this.readableSize = String.format("%.2f %s", size, units[unitIndex]);
+        return this.readableSize;
+    }
+
 }

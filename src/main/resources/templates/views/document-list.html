@@ -83,8 +83,8 @@
                 <tr th:each="file : ${files}">
                     <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
                         class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.name}]]</a></td>
-                    <td>[[${file.updatedAt}]]</td>
-                    <td>[[${file.size}]]</td>
+                    <td th:text="${#temporals.format(file.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>[[${file.readableSize}]]</td>
                     <td class="text-center">
                         <button type="button" class="btn btn-outline-success">
                             <i class="fas fa-brain me-2"></i>
@@ -96,6 +96,9 @@
                         </button>
                     </td>
                 </tr>
+                <tr class="text-center" th:if="${files.isEmpty()}">
+                    <td colspan="4" class="text-danger">No Data Found!</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -103,6 +106,19 @@
 </section>
 </body>
 <script layout:fragment="localJsCodeBlock" type="text/javascript" th:inline="javascript">
+    function formatFileSize(bytes) {
+        if (!bytes || bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString(); // You can customize this format if needed
+    }
+
     function refreshFileTable(projectId) {
         $.ajax({
             url: '/get-files/' + projectId,
@@ -119,8 +135,8 @@
                             <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
                             ${file.name}</a>
                         </td>
-                        <td>${file.updatedAt}</td>
-                        <td>${file.size || '-'}</td>
+                        <td>${formatDate(file.updatedAt)}</td>
+                        <td>${formatFileSize(file.size)}</td>
                         <td class="text-center">
                             <button type="button" class="btn btn-outline-success">
                                 <i class="fas fa-brain me-2"></i> Analyze
@@ -131,6 +147,11 @@
                         </td>
                     </tr>
                 `);
+                    if(files.length === 0)
+                        $tbody.append(`
+                        <tr class="text-center">
+                            <td colspan="4" class="text-danger">No Data Found!</td>
+                        `)
                 });
             },
             error: function (xhr, status, error) {
@@ -165,6 +186,10 @@
                 },
                 error: function (xhr, status, error) {
                     alert('Error uploading file: ' + error);
+                    // reset form data
+                    $('#uploadForm')[0].reset();
+                    // Hide the modal after error
+                    $('#myModal').modal('hide');
                 }
             });
         });

@@ -36,6 +36,10 @@ public class Analysis {
     @JdbcTypeCode(SqlTypes.JSON)
     private HashMap<String, Object> mapValue = new HashMap<>();
 
+    private Boolean isAnalyzed;
+
+    private LocalDateTime analyzedAt;
+
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;

@@ -7,6 +7,7 @@ import com.dsi.hackathon.exception.DataNotFoundException;
 import com.dsi.hackathon.repository.AnalysisRepository;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
+import com.dsi.hackathon.service.AnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -24,25 +25,28 @@ public class DocumentAnalysisController {
     private final UploadedDocumentRepository uploadedDocumentRepository;
     private final ProjectRepository projectRepository;
     private final AnalysisRepository analysisRepository;
+    private final AnalysisService analysisService;
 
-    public DocumentAnalysisController(UploadedDocumentRepository uploadedDocumentRepository, ProjectRepository projectRepository, AnalysisRepository analysisRepository) {
+    public DocumentAnalysisController(UploadedDocumentRepository uploadedDocumentRepository, ProjectRepository projectRepository, AnalysisRepository analysisRepository, AnalysisService analysisService) {
         this.uploadedDocumentRepository = uploadedDocumentRepository;
         this.projectRepository = projectRepository;
         this.analysisRepository = analysisRepository;
+        this.analysisService = analysisService;
     }
 
-    @GetMapping("/project/{projectId}/summary")
+    @GetMapping("/project/{projectId}/analysis")
     public String getDocumentList(@PathVariable("projectId") Integer projectId,
                                   @RequestParam(required = false) Integer documentId,
                                   Model model) {
         logger.info("Viewing analysis for Project({}) and UploadedDocument({})", projectId, documentId);
         String summaryFor;
-        Analysis analysis;
         Project project;
+        Analysis analysis;
+        UploadedDocument uploadedDocument = null;
+
         project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
 
         if (Objects.nonNull(documentId)) {
-            UploadedDocument uploadedDocument;
             uploadedDocument = uploadedDocumentRepository.findById(documentId).orElseThrow(DataNotFoundException::new);
 
             summaryFor = "%s: %s".formatted(
@@ -53,22 +57,15 @@ public class DocumentAnalysisController {
             analysis = analysisRepository.findByProjectIdAndUploadedDocumentId(projectId, documentId)
                                          .orElse(null);
 
-            if (Objects.isNull(analysis)) {
-                // todo create analysis
-                analysis = new Analysis();
-            }
-
         } else {
             summaryFor = "Project: %s".formatted(project.getName());
 
             analysis = analysisRepository.findByProjectIdAndUploadedDocumentNull(projectId)
                                          .orElse(null);
+        }
 
-            if (Objects.isNull(analysis)) {
-                // todo create analysis
-                analysis = new Analysis();
-            }
-
+        if (Objects.isNull(analysis)) {
+            analysis = analysisService.generateAnalysis(project, uploadedDocument);
         }
 
         model.addAttribute("project", project);

@@ -39,3 +39,4 @@ build/
 
 /train/augment/raw_txt_input/**
 /train/augment/combined_summarization_pretrain.jsonl
+/train/augment/unsloth_chat_format.jsonl

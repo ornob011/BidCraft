@@ -36,3 +36,6 @@ build/
 /src/test/**
 
 /src/main/resources/application-dev-*.properties
+
+/train/raw_txt_input/**
+/train/combined_summarization_pretrain.jsonl

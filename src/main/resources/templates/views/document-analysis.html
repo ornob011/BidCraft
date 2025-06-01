@@ -14,10 +14,11 @@
                 <h2 class="mb-0 fw-bold">Dummy Project</h2>
             </div>
         </div>
-        <div th:with="tabs='Document List,Analysis,Projects,Restricted',
-        icons='fa-file-upload,fa-brain,fa-folder-open,fa-lock',
-        urls='/document-list/' + ${projectId} + ',/analysis/' + ${projectId} + ',/projects,/restricted'">
-            <div th:replace="fragments/tab-view :: tab-view(${tabs}, ${icons}, ${urls}, 'Document List')"></div>
+
+        <div th:with="tabs='Document List,Analysis',
+                      icons='fa-file-upload,fa-brain',
+                      urls='/document-list/' + ${projectId} + ',/project/' + ${projectId} + '/analysis'">
+            <div th:replace="fragments/tab-view :: tab-view(${tabs}, ${icons}, ${urls}, 'Analysis')"></div>
         </div>
 
         <div>
@@ -39,7 +40,7 @@
                     Summary
                 </div>
                 <div id="summaryDiv" class="card-body">
-                    <th:block th:text="${analysis?.summary ?: 'Summery not available. Generating summary...'}"></th:block>
+                    <th:block th:text="${analysis?.summary ?: 'Summary not available. Generating summary...'}"></th:block>
                 </div>
             </div>
         </div>

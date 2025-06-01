@@ -11,12 +11,12 @@
         <div class="d-flex align-items-center mb-5">
             <i class="fas fa-briefcase fs-1 text-success me-3"></i>
             <div>
-                <h2 class="mb-0 fw-bold">Dummy Project</h2>
+                <h2 class="mb-0 fw-bold" th:text="${project.name}"></h2>
             </div>
         </div>
-        <div th:with="tabs='Document List,Analysis,Projects,Restricted',
-        icons='fa-file-upload,fa-brain,fa-folder-open,fa-lock',
-        urls='/document-list/' + ${projectId} + ',/analysis/' + ${projectId} + ',/projects,/restricted'">
+        <div th:with="tabs='Document List,Analysis',
+                      icons='fa-file-upload,fa-brain',
+                      urls='/document-list/' + ${projectId} + ',/project/' + ${projectId} + '/analysis'">
             <div th:replace="fragments/tab-view :: tab-view(${tabs}, ${icons}, ${urls}, 'Document List')"></div>
         </div>
 

@@ -1,87 +1,134 @@
 package com.dsi.hackathon.service;
 
+import com.dsi.hackathon.entity.Analysis;
+import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.UploadedDocument;
-import com.dsi.hackathon.enums.MetaDataLabel;
-import com.dsi.hackathon.enums.UploadedDocumentType;
-import com.dsi.hackathon.prompts.AnalysisPrompts;
-import com.dsi.hackathon.util.TextUtils;
+import com.dsi.hackathon.exception.DataNotFoundException;
+import com.dsi.hackathon.repository.AnalysisRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class AnalysisService {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
+    private final AnalysisRepository analysisRepository;
+    private final SummaryAnalysisService summaryAnalysisService;
+    private final FileUploadService fileUploadService;
 
-    private final VectorFileService vectorFileService;
-    private final PgVectorStore vectorStore;
-    private final ChatClient chatClient;
-    private final AnalysisPrompts analysisPrompts;
-
-    public AnalysisService(ChatClient.Builder builder, PgVectorStore vectorStore, VectorFileService vectorFileService, AnalysisPrompts analysisPrompts) {
-        this.chatClient = builder.defaultSystem(analysisPrompts.getAnalyzerSystemMsg()).build();
-        this.vectorStore = vectorStore;
-        this.vectorFileService = vectorFileService;
-        this.analysisPrompts = analysisPrompts;
+    public AnalysisService(AnalysisRepository analysisRepository, SummaryAnalysisService summaryAnalysisService, FileUploadService fileUploadService) {
+        this.analysisRepository = analysisRepository;
+        this.summaryAnalysisService = summaryAnalysisService;
+        this.fileUploadService = fileUploadService;
     }
 
-    public String summeryAnalysis(UploadedDocument uploadedDocument) {
-        logger.info("Generating Summary for UploadedDocument({})", uploadedDocument.getId());
+    @Transactional
+    public Analysis analyse(Integer analysisId) {
+        Analysis analysis = analysisRepository.findByIdWithLock(analysisId).orElseThrow(DataNotFoundException::new);
 
-        SearchRequest searchRequest;
-        searchRequest = SearchRequest.builder()
-                                     .filterExpression(MetaDataLabel.UPLOADED_DOC_ID.eq(uploadedDocument.getId()))
-                                     .build();
+        // For single document analysis
+        if (Objects.nonNull(analysis.getUploadedDocument())) {
+            analyseUploadedDocument(analysis, Boolean.FALSE);
+            return analysis;
+        }
 
-        // fetch documents form vector store for uploaded document
-        String documentStr = vectorStore.similaritySearch(searchRequest).stream()
-                                        .map(Document::getText)
-                                        .collect(Collectors.joining("\n"));
+        // For project analysis
+        analyzeProject(analysis, Boolean.FALSE);
 
-        return summeryAnalysis(documentStr, uploadedDocument.getUploadedDocumentType());
+        return analysis;
     }
 
-    public String summeryAnalysis(Resource file, UploadedDocumentType documentType) {
-        logger.info("Generating Summary for file: {}", file.getFilename());
+    @SuppressWarnings("UnusedReturnValue")
+    @Transactional
+    public boolean analyzeProject(Analysis analysis, Boolean reAnalyze) {
+        Project project = analysis.getProject();
 
-        String documentStr;
-        documentStr = vectorFileService.getPdfDocumentReader(file)
-                                       .get()
-                                       .stream()
-                                       .map(Document::getText)
-                                       .collect(Collectors.joining("\n"));
+        if (Objects.nonNull(analysis.getUploadedDocument())) {
+            throw new IllegalArgumentException("Analysis(%d) not targeted for project".formatted(analysis.getId()));
+        }
 
-        return summeryAnalysis(documentStr, documentType);
-    }
+        logger.info("Analyzing Project({}) Analysis({})", project.getId(), analysis.getId());
 
-    public String summeryAnalysis(String content, UploadedDocumentType documentType) {
-        logger.info("Generating Summary for string content");
+        List<Analysis> analysisList;
+        analysisList = analysisRepository.findByUploadedDocumentInWithLock(project.getUploadedDocuments());
 
-        Resource userMsgResource;
-        userMsgResource = analysisPrompts.getAnalysisTemplate(documentType);
+        boolean isProjectUpdated = false;
+        for (Analysis documentAnalysis : analysisList) {
+            boolean isUpdated = analyseUploadedDocument(documentAnalysis, Boolean.FALSE);
+            if (isUpdated) {
+                isProjectUpdated = true;
+            }
+        }
 
-        // call api with specified prompts
+        if (!isProjectUpdated && Boolean.TRUE.equals(analysis.getIsAnalyzed()) && !Boolean.TRUE.equals(reAnalyze)) {
+            return false;
+        }
+
+        // todo:: generate summary for project
+        String documentAnalysisSummary = analysisList.stream()
+                                              .map(Analysis::getSummary)
+                                              .map(documentSummary ->
+                                                  "####### %s #######\n"
+                                                      .formatted(
+                                                          analysis.getUploadedDocument()
+                                                                  .getUploadedDocumentType()
+                                                                  .getDisplayName()
+                                                      )
+                                                  + documentSummary
+                                                  + "#####################"
+                                              ).collect(Collectors.joining("\n\n"));
+
         String summary;
-        summary = chatClient.prompt()
-                            .user(promptUserSpec -> promptUserSpec.text(userMsgResource)
-                                                                  .param("document", content))
-                            .call()
-                            .content();
+        summary = summaryAnalysisService.summeryAnalysis(documentAnalysisSummary, null);
+        analysis.setSummary(summary);
 
-        return summary;
+        // todo:: generate analysis details for project
+
+        analysis.setIsAnalyzed(Boolean.TRUE);
+        analysis.setAnalyzedAt(LocalDateTime.now());
+        return true;
     }
 
-    public String summeryAnalysis(MultipartFile file, UploadedDocumentType documentType) {
-        return summeryAnalysis(file.getResource(), documentType);
+    @Transactional
+    public boolean analyseUploadedDocument(Analysis analysis, Boolean reAnalyze) {
+        UploadedDocument uploadedDocument = analysis.getUploadedDocument();
+
+        if (Objects.isNull(uploadedDocument)) {
+            throw new IllegalArgumentException("Analysis(%d) not targeted for UploadedDocument".formatted(analysis.getId()));
+        }
+
+        logger.info("Analyzing UploadedDocument({}) Analysis({})", uploadedDocument.getId(), analysis.getId());
+
+        if (Boolean.TRUE.equals(analysis.getIsAnalyzed()) && !Boolean.TRUE.equals(reAnalyze)) {
+            return false;
+        }
+
+        Resource documentResource;
+        documentResource = fileUploadService.getFileResource(uploadedDocument.getFileBucket());
+
+        String summary;
+        summary = summaryAnalysisService.summeryAnalysis(documentResource, uploadedDocument.getUploadedDocumentType());
+        analysis.setSummary(summary);
+
+        // todo:: generate analysis details for document
+
+        analysis.setIsAnalyzed(Boolean.TRUE);
+        analysis.setAnalyzedAt(LocalDateTime.now());
+        return true;
     }
 
+    @Transactional
+    public Analysis generateAnalysis(Project project, UploadedDocument uploadedDocument) {
+        Analysis analysis = new Analysis();
+        analysis.setProject(project);
+        analysis.setUploadedDocument(uploadedDocument);
+        return analysisRepository.save(analysis);
+    }
 }

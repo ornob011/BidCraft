@@ -8,14 +8,15 @@ import com.dsi.hackathon.enums.MetaDataLabel;
 import com.dsi.hackathon.enums.UploadedDocumentType;
 import com.dsi.hackathon.repository.FileBucketRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
-import io.minio.GetPresignedObjectUrlArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
+import io.minio.errors.*;
 import io.minio.RemoveObjectArgs;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 @Service
@@ -131,7 +136,26 @@ public class FileUploadService {
             throw e; // rethrow the original exception
         }
     }
-    
-    
 
+
+
+    public InputStream getFileStream(FileBucket fileBucket) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        return minioClient.getObject(
+            GetObjectArgs.builder()
+                         .bucket(minioProperties.getBucketName())
+                         .object(fileBucket.getName())
+                         .build()
+        );
+    }
+
+    public Resource getFileResource(FileBucket fileBucket) {
+        try {
+            return new InputStreamResource(getFileStream(fileBucket));
+        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException |
+                 NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException |
+                 InternalException e) {
+//            logger.error("Failed to get file for FileBucket({})", fileBucket.getId(), e);
+            throw new RuntimeException("Failed to get file for FileBucket(%d)".formatted(fileBucket.getId()), e);
+        }
+    }
 }

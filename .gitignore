@@ -36,3 +36,7 @@ build/
 /src/test/**
 
 /src/main/resources/application-dev-*.properties
+
+/train/augment/raw_txt_input/**
+/train/augment/combined_summarization_pretrain.jsonl
+/train/augment/unsloth_chat_format.jsonl

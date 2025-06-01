@@ -17,5 +17,5 @@ Present your summary using clear headings and bullet points where appropriate.
 
 RFP Document:
 ---
-{rfpDocument}
+{document}
 ---

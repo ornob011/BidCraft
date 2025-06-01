@@ -40,13 +40,13 @@ public class ProjectRestController {
 
     @PostMapping("/create-project")
     public ResponseEntity<ApiResponse<?>> create(@Valid @RequestBody ProjectDto dto,
-                                                       BindingResult bindingResult) {
-        if (ObjectUtils.isEmpty(dto.getName())){
-            bindingResult.rejectValue("name","project.name.not.blank");
+                                                 BindingResult bindingResult) {
+        if (ObjectUtils.isEmpty(dto.getName())) {
+            bindingResult.rejectValue("name", "project.name.not.blank");
         }
 
-        if (ObjectUtils.isEmpty(dto.getDescription())){
-            bindingResult.rejectValue("description","project.description.not.blank");
+        if (ObjectUtils.isEmpty(dto.getDescription())) {
+            bindingResult.rejectValue("description", "project.description.not.blank");
         }
 
         if (bindingResult.hasErrors()) {

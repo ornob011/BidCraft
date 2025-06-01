@@ -18,8 +18,8 @@ public class HomeController {
             return "redirect:/login";
         }
 
-        logger.info("Redirecting to dashboard");
-        return "redirect:/dashboard";
+        logger.info("Redirecting to project page");
+        return "redirect:/projects";
     }
 
 }

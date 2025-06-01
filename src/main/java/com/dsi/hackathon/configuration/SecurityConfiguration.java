@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                 .loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/dashboard", true)
+                .defaultSuccessUrl("/projects", true)
                 .permitAll()
             )
             .logout(logout -> logout

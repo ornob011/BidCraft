@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
-public class DashboardController {
-    private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
+public class ProjectController {
+    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
 
     private final ProjectRepository projectRepository;
 
-    public DashboardController(ProjectRepository projectRepository) {
+    public ProjectController(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/projects")
     @Transactional(readOnly = true)
     public String dashboard(Model model) {
         Integer loggedInUserId = Utils.getLoggedInUserId();
@@ -33,6 +33,6 @@ public class DashboardController {
 
         logger.info("Accessed dashboard page for User({})", loggedInUserId);
 
-        return "dashboard";
+        return "views/project";
     }
 }

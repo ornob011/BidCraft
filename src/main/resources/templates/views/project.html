@@ -78,12 +78,12 @@
 </section>
 
 <span layout:fragment="customJsImportBlock">
-    <script type="text/javascript" th:src="@{/js/widget/dashboard-form-widget.js}"></script>
+    <script type="text/javascript" th:src="@{/js/widget/project-form-widget.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootbox/5.5.2/bootbox.all.js}"></script>
 </span>
 
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
-    $("body").dashboardFormWidget(
+    $("body").projectFormWidget(
         {}
     );
 </script>

@@ -1,6 +1,7 @@
 package com.dsi.hackathon.entity;
 
 import com.dsi.hackathon.enums.UploadedDocumentType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class UploadedDocument {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
+    @JsonIgnore
     private Project project;
 
     @Column(name = "uploaded_document_type", nullable = false)

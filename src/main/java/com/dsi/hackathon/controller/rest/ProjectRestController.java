@@ -1,9 +1,11 @@
 package com.dsi.hackathon.controller.rest;
 
 import com.dsi.hackathon.dto.ProjectDto;
+import com.dsi.hackathon.entity.Analysis;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.pojo.ApiResponse;
+import com.dsi.hackathon.repository.AnalysisRepository;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UserRepository;
 import com.dsi.hackathon.util.Utils;
@@ -24,11 +26,16 @@ public class ProjectRestController {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final MessageSource messageSource;
+    private final AnalysisRepository analysisRepository;
 
-    public ProjectRestController(ProjectRepository projectRepository, UserRepository userRepository, MessageSource messageSource) {
+    public ProjectRestController(ProjectRepository projectRepository,
+                                 UserRepository userRepository,
+                                 MessageSource messageSource,
+                                 AnalysisRepository analysisRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.messageSource = messageSource;
+        this.analysisRepository = analysisRepository;
     }
 
     @PostMapping("/create-project")
@@ -60,6 +67,10 @@ public class ProjectRestController {
         project.setDescription(dto.getDescription());
         project.setUser(user);
         projectRepository.save(project);
+
+        Analysis analysis = new Analysis();
+        analysis.setProject(project);
+        analysisRepository.save(analysis);
 
         String successMessage = Utils.getMessageFromMessageSource(messageSource, "project.create.success");
 

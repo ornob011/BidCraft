@@ -35,7 +35,7 @@ public class DocumentListController {
 
         Project project = projectRepository.findById(projectId).orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
-        if(!project.getUser().getEmail().equals(Utils.getAuthentication().getName())){
+        if(!project.getUser().getId().equals(Utils.getLoggedInUserId())){
             logger.info("User is not authorized to view this project");
             Utils.setErrorMessageCode(request, messageSource, "error.unauthorized.access");
             return "redirect:/dashboard";

@@ -37,8 +37,7 @@ public class FileUploadController {
                                              @PathVariable("projectId") Integer projectId,
                                              HttpServletRequest request) throws Exception {
 
-        String email = Utils.getAuthentication().getName();
-        Integer userId = email == null ? null : userRepository.findByEmail(email).orElseThrow().getId();
+        Integer userId = Utils.getLoggedInUserId();
         Project project = projectRepository.findById(projectId).orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
         uploadService.uploadFileAndStoreInVectorDB(file, type, project, userId);

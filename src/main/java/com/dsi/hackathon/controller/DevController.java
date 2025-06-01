@@ -51,10 +51,11 @@ public class DevController {
                          UserRepository userRepository,
                          ProjectRepository projectRepository,
                          VectorFileService vectorFileService,
-                         AnalysisService analysisService,
+                         SummaryAnalysisService summaryAnalysisService,
                          MinioClient minioClient,
-                         MinioProperties minioProperties, UploadedDocumentRepository uploadedDocumentRepository, VectorDocumentQueryService vectorDocumentQueryService) {
-        SummaryAnalysisService summaryAnalysisService) {
+                         MinioProperties minioProperties,
+                         UploadedDocumentRepository uploadedDocumentRepository,
+                         VectorDocumentQueryService vectorDocumentQueryService) {
         this.passwordHashService = passwordHashService;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;

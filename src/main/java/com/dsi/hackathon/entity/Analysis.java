@@ -29,8 +29,7 @@ public class Analysis {
     @JoinColumn(name = "uploaded_document_id")
     private UploadedDocument uploadedDocument;
 
-    @Lob
-    @Column
+    @Column(columnDefinition = "text")
     private String summary;
 
     @JdbcTypeCode(SqlTypes.JSON)

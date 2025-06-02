@@ -1,0 +1,32 @@
+<th:block th:fragment="project-tabs">
+    <ul class="nav nav-tabs mb-3 border-bottom border-success-subtle">
+        <th:block
+            th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).OVERVIEW}"
+            th:insert="~{ :: project-tab-item(iconClass='fa-chart-pie')}"
+        ></th:block>
+        <th:block
+            th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).CHAT}"
+            th:insert="~{ :: project-tab-item(iconClass='fa-comment-dots')}"
+        ></th:block>
+        <th:block
+            th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).DOCUMENT_LIST}"
+            th:insert="~{ :: project-tab-item(iconClass='fa-file-upload')}"
+        ></th:block>
+        <th:block
+            th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).ANALYSIS}"
+            th:insert="~{ :: project-tab-item(iconClass='fa-magnifying-glass-chart')}"
+        ></th:block>
+    </ul>
+</th:block>
+
+<li th:fragment="project-tab-item(iconClass)" th:if="${projectTab}" class="nav-item">
+    <!--/*@thymesVar id="activeTab" type="com.dsi.hackathon.enums.ProjectTab"*/-->
+    <!--/*@thymesVar id="projectTab" type="com.dsi.hackathon.enums.ProjectTab"*/-->
+    <a class="nav-link border border-1 border-bottom-0"
+       th:with="isActive = ${projectTab == activeTab}"
+       th:classappend="${isActive ? 'active bg-success text-white fw-semibold' : 'text-dark'}"
+       th:href="${projectTab?.getUrl(project?.id)}">
+        <i class="fas me-1" th:classappend="${iconClass}"></i>
+        <th:block th:text="${projectTab?.label}"></th:block>
+    </a>
+</li>

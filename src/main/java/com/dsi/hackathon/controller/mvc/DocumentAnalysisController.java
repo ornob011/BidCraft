@@ -3,6 +3,7 @@ package com.dsi.hackathon.controller.mvc;
 import com.dsi.hackathon.entity.Analysis;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.UploadedDocument;
+import com.dsi.hackathon.enums.ProjectTab;
 import com.dsi.hackathon.exception.DataNotFoundException;
 import com.dsi.hackathon.repository.AnalysisRepository;
 import com.dsi.hackathon.repository.ProjectRepository;
@@ -69,6 +70,8 @@ public class DocumentAnalysisController {
         }
 
         model.addAttribute("project", project);
+        model.addAttribute("activeTab", ProjectTab.ANALYSIS);
+
         model.addAttribute("projectId", projectId);
         model.addAttribute("documentId", documentId);
         model.addAttribute("summaryFor", summaryFor);

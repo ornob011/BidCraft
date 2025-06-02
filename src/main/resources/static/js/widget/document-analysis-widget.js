@@ -16,6 +16,7 @@ $.widget("ros.documentAnalysisWidget", {
         const self = this;
 
         self.loadAnalysisSummary();
+        self.parseMarkDown(self.el.summaryDiv, self.el.summaryDiv.text());
     },
     loadAnalysisSummary: function () {
         const self = this;
@@ -26,7 +27,7 @@ $.widget("ros.documentAnalysisWidget", {
                 type: "POST",
                 success: function (response) {
                     if (response && response.data) {
-                        self.el.summaryDiv.html(response.data);
+                        self.parseMarkDown(self.el.summaryDiv, response.data);
                     } else {
                         self.el.summaryDiv.html('Failed to generate analysis. Please reload page and try again.');
                     }
@@ -36,5 +37,14 @@ $.widget("ros.documentAnalysisWidget", {
                 }
             });
         }
+    },
+    parseMarkDown: function (containingElement, markdownContent) {
+        const container = $(containingElement);
+
+        let result = markdownContent || container.html();
+        result = marked.parse(result);
+        // result = DOMPurify.sanitize(result);
+
+        container.html(result);
     }
 });

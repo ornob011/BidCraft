@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title layout:fragment="title">BidCraft</title>
+    <th:block th:replace="~{fragments/common-head :: common-head}"></th:block>
+
+    <!-- Custom CSS files -->
+    <th:block layout:fragment="custom-css"></th:block>
+</head>
+
+<body>
+<div class="page-container">
+    <header th:insert="~{fragments/top-menu :: top-menu}"></header>
+
+    <main>
+        <div class="container py-5 my-4">
+            <!-- Project Info -->
+            <div class="d-flex align-items-center mb-5">
+                <i class="fas fa-briefcase fs-1 text-success me-3"></i>
+                <div>
+                    <h2 class="mb-0 fw-bold" th:text="${project?.name ?: 'Project'}"></h2>
+                </div>
+            </div>
+
+            <!-- Project Tabs -->
+            <div class="mb-3">
+                <th:block th:insert="~{fragments/project-tab-view :: project-tabs}"></th:block>
+            </div>
+
+            <section layout:fragment="contentBody">
+                <!-- page content here -->
+            </section>
+        </div>
+    </main>
+
+    <!-- Modals start here -->
+    <th:block class="modal-block" layout:fragment="modalBlock"></th:block>
+    <!-- Modals end here -->
+</div>
+
+<!-- Custom js block -->
+<th:block layout:fragment="customJsImportBlock"></th:block>
+
+<script layout:fragment="localJsCodeBlock" type="text/javascript">
+</script>
+
+</body>
+</html>

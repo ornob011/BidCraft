@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/project-layout}" lang="en">
+
+<title layout:fragment="title">Project Overview</title>
+
+
+<section layout:fragment="contentBody" layout:with="activeTab = ${T(com.dsi.hackathon.enums.ProjectTab).OVERVIEW}">
+    <div class="d-flex flex-wrap">
+        <h5 class="font-size-16 me-3">Overview</h5>
+    </div>
+    <hr class="mt-2">
+    <div class="d-flex flex-wrap gap-3">
+        <div class="card w-100">
+            <div class="card-header fw-bold">Description</div>
+            <div class="card-body" th:text="${project?.description ?: 'Project description not available'}"></div>
+        </div>
+
+        <div class="card w-100">
+            <div class="card-header fw-bold">Stats</div>
+            <div class="card-body">
+                <div class="d-flex gap-2">
+                    <label class="text-secondary fw-bold">Project created at:</label>
+                    <span th:text="${#temporals.format(project?.createdAt)}"></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <label class="text-secondary fw-bold">Total uploaded files:</label>
+                    <span th:text="${project?.uploadedDocuments?.size()}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script layout:fragment="localJsCodeBlock" type="text/javascript" th:inline="javascript">
+
+</script>
+</html>

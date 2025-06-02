@@ -44,7 +44,7 @@
         <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
             <th:block th:if="${projectList != null and !projectList.isEmpty()}">
                 <div class="col" th:each="project : ${projectList}">
-                    <a th:href="@{/project/{id}/document-list(id=${project.id})}" class="text-decoration-none">
+                    <a th:href="@{/project/{projectId}(projectId=${project?.id})}" class="text-decoration-none">
                         <div class="card h-100 border-success">
                             <div class="card-header bg-success bg-opacity-10 border-success">
                                 <div class="d-flex align-items-center">

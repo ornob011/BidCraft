@@ -47,7 +47,7 @@
             </td>
         </tr>
         <tr class="text-center" th:if="${files.isEmpty()}">
-            <td colspan="4" class="text-danger">No Data Found!</td>
+            <td colspan="4" class="fw-bold text-danger">No Data Found!</td>
         </tr>
         </tbody>
     </table>
@@ -137,7 +137,7 @@
                     if(files.length === 0)
                         $tbody.append(`
                         <tr class="text-center">
-                            <td colspan="4" class="text-danger">No Data Found!</td>
+                            <td colspan="4" class="fw-bold text-danger">No Data Found!</td>
                         `)
                 });
             },

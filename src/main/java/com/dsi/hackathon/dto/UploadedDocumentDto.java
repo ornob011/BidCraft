@@ -1,7 +1,6 @@
 package com.dsi.hackathon.dto;
 
 import com.dsi.hackathon.enums.UploadedDocumentType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -15,31 +14,21 @@ public class UploadedDocumentDto {
     private Float size;
     private String path;
     private String readableSize;
+    private Integer projectId;
 
     public UploadedDocumentDto(Integer id,
                                String name,
                                UploadedDocumentType type,
                                LocalDateTime updatedAt,
                                Float size,
-                               String path) {
+                               String path,
+                               Integer projectId) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.updatedAt = updatedAt;
         this.size = size;
         this.path = path;
+        this.projectId = projectId;
     }
-
-    public String getReadableSize() {
-        String[] units = {"Bytes", "KB", "MB", "GB", "TB"};
-        double size = this.size; // assuming size is in bytes
-        int unitIndex = 0;
-        while (size >= 1024 && unitIndex < units.length - 1) {
-            size /= 1024;
-            unitIndex++;
-        }
-        this.readableSize = String.format("%.2f %s", size, units[unitIndex]);
-        return this.readableSize;
-    }
-
 }

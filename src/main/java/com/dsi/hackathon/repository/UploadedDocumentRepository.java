@@ -17,7 +17,8 @@ public interface UploadedDocumentRepository extends JpaRepository<UploadedDocume
                u.uploadedDocumentType,
                u.updatedAt,
                u.fileBucket.size,
-               u.fileBucket.path
+               u.fileBucket.path,
+               u.project.id
             )
             FROM UploadedDocument u
             WHERE u.project.id = :projectId

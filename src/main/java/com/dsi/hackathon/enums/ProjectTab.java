@@ -19,7 +19,7 @@ public enum ProjectTab {
         return switch (this) {
             case OVERVIEW -> UriComponentsBuilder.fromPath("/project/{projectId}/overview").buildAndExpand(projectId).toUriString();
             case CHAT -> UriComponentsBuilder.fromPath("/project/{projectId}/chat").buildAndExpand(projectId).toUriString();
-            case DOCUMENT_LIST -> UriComponentsBuilder.fromPath("/document-list/{projectId}").buildAndExpand(projectId).toUriString();
+            case DOCUMENT_LIST -> UriComponentsBuilder.fromPath("/project/{projectId}/document-list").buildAndExpand(projectId).toUriString();
             case ANALYSIS -> UriComponentsBuilder.fromPath("/project/{projectId}/analysis").buildAndExpand(projectId).toUriString();
         };
     }

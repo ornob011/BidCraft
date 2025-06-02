@@ -95,89 +95,12 @@
 
 <span layout:fragment="customJsImportBlock">
     <script type="text/javascript" th:src="@{/js/enum/uploaded-document-type.js}"></script>
+    <script type="text/javascript" th:src="@{/js/widget/document-list-widget.js}"></script>
 </span>
 
-<script layout:fragment="localJsCodeBlock" type="text/javascript" th:inline="javascript">
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleString();
-    }
-
-    function refreshFileTable(projectId) {
-        $.ajax({
-            url: '/get-files/' + projectId,
-            type: 'GET',
-            success: function (files) {
-                console.log(files);
-                const $tbody = $('tbody');
-                $tbody.empty(); // Clear the table
-
-                files.forEach(function (file) {
-                    $tbody.append(`
-                    <tr>
-                        <td><a href="/api/document-viewer/${file.id}" class="text-dark fw-medium" target="_blank">
-                            <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
-                            ${file.name}</a>
-                        </td>
-                        <td>${formatDate(file.updatedAt)}</td>
-                        <td>${Ros.ENUM.UploadedDocumentType[file?.type] || ''}</td>
-                        <td class="text-center">
-                            <a href="/project/${file.projectId}/analysis?documentId=${file.id}"
-                               class="btn btn-outline-success">
-                                <i class="fas fa-brain me-2"></i> Analyze
-                            </a>
-                            <button type="button" class="btn btn-outline-danger">
-                                <i class="fas fa-trash-alt me-2"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `);
-                    if(files.length === 0)
-                        $tbody.append(`
-                        <tr class="text-center">
-                            <td colspan="3" class="fw-bold text-danger">No Data Found!</td>
-                        `)
-                });
-            },
-            error: function (xhr, status, error) {
-                alert('Error refreshing table: ' + error);
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        $('#uploadForm').submit(function (e) {
-            console.log("entered here")
-            e.preventDefault(); // Prevent normal form submission
-
-            const formData = new FormData(this);
-            const projectId = [[${projectId}]]; // Read projectId before the AJAX call
-
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'), // Should match a @PostMapping on the server
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function (response) {
-                    // reset form data
-                    $('#uploadForm')[0].reset();
-                    // Hide the modal after successful upload
-                    $('#myModal').modal('hide');
-
-                    // Refresh the table
-                    refreshFileTable(projectId);
-                },
-                error: function (xhr, status, error) {
-                    alert('Error uploading file: ' + error);
-                    // reset form data
-                    $('#uploadForm')[0].reset();
-                    // Hide the modal after error
-                    $('#myModal').modal('hide');
-                }
-            });
-        });
+<script layout:fragment="localJsCodeBlock" type="text/javascript">
+    $("body").documentListWidget({
+        projectId: [[${projectId}]]
     });
 
 </script>

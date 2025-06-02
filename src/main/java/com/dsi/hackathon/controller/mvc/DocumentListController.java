@@ -1,6 +1,7 @@
 package com.dsi.hackathon.controller.mvc;
 
 import com.dsi.hackathon.entity.Project;
+import com.dsi.hackathon.enums.ProjectTab;
 import com.dsi.hackathon.enums.UploadedDocumentType;
 import com.dsi.hackathon.exception.DataNotFoundException;
 import com.dsi.hackathon.repository.ProjectRepository;
@@ -38,7 +39,9 @@ public class DocumentListController {
                                                )
                                            );
 
+
         model.addAttribute("project", project);
+        model.addAttribute("activeTab", ProjectTab.DOCUMENT_LIST);
         model.addAttribute("projectId", projectId);
         model.addAttribute("documentTypes", UploadedDocumentType.values());
         model.addAttribute("files", uploadedDocumentRepository.findUploadedDocumentByProjectId(projectId));

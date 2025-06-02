@@ -7,11 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
 public class AnalysisRestController {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisRestController.class);
 
@@ -21,7 +19,7 @@ public class AnalysisRestController {
         this.analysisService = analysisService;
     }
 
-    @PostMapping("/analysis/{analysisId}/summary")
+    @PostMapping("/api/analysis/{analysisId}/summary")
     public ApiResponse<String> getAnalysisSummary(@PathVariable("analysisId") Integer analysisId) {
         logger.info("Getting analysis summary for analysis id {}", analysisId);
 

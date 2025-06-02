@@ -32,6 +32,7 @@ public class AnalysisPrompts {
 
         return switch (documentType) {
             case TERMS_OF_REFERENCE -> getTorSummarizerTemplate();
+            case REQUEST_FOR_PROPOSAL -> getTorSummarizerTemplate();
             default -> null;
         };
     }

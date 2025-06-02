@@ -74,16 +74,7 @@ public class AnalysisService {
         // todo:: generate summary for project
         String documentAnalysisSummary = analysisList.stream()
                                               .map(Analysis::getSummary)
-                                              .map(documentSummary ->
-                                                  "####### %s #######\n"
-                                                      .formatted(
-                                                          analysis.getUploadedDocument()
-                                                                  .getUploadedDocumentType()
-                                                                  .getDisplayName()
-                                                      )
-                                                  + documentSummary
-                                                  + "#####################"
-                                              ).collect(Collectors.joining("\n\n"));
+                                              .collect(Collectors.joining("\n\n"));
 
         String summary;
         summary = summaryAnalysisService.summeryAnalysis(documentAnalysisSummary, null);

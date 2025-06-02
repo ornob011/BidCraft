@@ -26,7 +26,7 @@ public class Project {
     @Column(nullable = false)
     private String name;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)

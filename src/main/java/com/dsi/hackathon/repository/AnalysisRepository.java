@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,7 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
     Optional<Analysis> findByProjectIdAndUploadedDocumentId(@Param("projectId") Integer projectId,
                                                             @Param("documentId") Integer documentId);
 
+    @Transactional(readOnly = true)
     @Query("select a from Analysis a where a.project.id = :id and a.uploadedDocument is null order by a.id limit 1")
     Optional<Analysis> findByProjectIdAndUploadedDocumentNull(@Param("id") Integer id);
 

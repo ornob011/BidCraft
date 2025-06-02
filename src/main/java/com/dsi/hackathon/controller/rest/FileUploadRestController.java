@@ -8,6 +8,7 @@ import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
 import com.dsi.hackathon.service.FileUploadService;
 import com.dsi.hackathon.util.Utils;
+import io.minio.errors.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -17,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -34,7 +38,7 @@ public class FileUploadRestController {
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
                                              @RequestParam("type") UploadedDocumentType type,
                                              @PathVariable("projectId") Integer projectId,
-                                             HttpServletRequest request) throws Exception {
+                                             HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
 
         Project project = projectRepository.findById(projectId)
                                            .orElseThrow(

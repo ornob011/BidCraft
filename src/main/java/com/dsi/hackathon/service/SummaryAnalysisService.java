@@ -14,6 +14,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +34,7 @@ public class SummaryAnalysisService {
         this.analysisPrompts = analysisPrompts;
     }
 
-    public String summeryAnalysis(UploadedDocument uploadedDocument) {
+    public String summaryAnalysis(UploadedDocument uploadedDocument) {
         logger.info("Generating Summary for UploadedDocument({})", uploadedDocument.getId());
 
         SearchRequest searchRequest;
@@ -41,14 +43,16 @@ public class SummaryAnalysisService {
                                      .build();
 
         // fetch documents form vector store for uploaded document
-        String documentStr = vectorStore.similaritySearch(searchRequest).stream()
-                                        .map(Document::getText)
-                                        .collect(Collectors.joining("\n"));
+        String documentStr = Optional.ofNullable(vectorStore.similaritySearch(searchRequest))
+                                     .orElse(Collections.emptyList())
+                                     .stream()
+                                     .map(Document::getText)
+                                     .collect(Collectors.joining("\n"));
 
-        return summeryAnalysis(documentStr, uploadedDocument.getUploadedDocumentType());
+        return summaryAnalysis(documentStr, uploadedDocument.getUploadedDocumentType());
     }
 
-    public String summeryAnalysis(Resource file, UploadedDocumentType documentType) {
+    public String summaryAnalysis(Resource file, UploadedDocumentType documentType) {
         logger.info("Generating Summary for file: {}", file.getFilename());
 
         String documentStr;
@@ -58,10 +62,10 @@ public class SummaryAnalysisService {
                                        .map(Document::getText)
                                        .collect(Collectors.joining("\n"));
 
-        return summeryAnalysis(documentStr, documentType);
+        return summaryAnalysis(documentStr, documentType);
     }
 
-    public String summeryAnalysis(String content, UploadedDocumentType documentType) {
+    public String summaryAnalysis(String content, UploadedDocumentType documentType) {
         logger.info("Generating Summary for string content");
 
         Resource userMsgResource;
@@ -78,8 +82,8 @@ public class SummaryAnalysisService {
         return summary;
     }
 
-    public String summeryAnalysis(MultipartFile file, UploadedDocumentType documentType) {
-        return summeryAnalysis(file.getResource(), documentType);
+    public String summaryAnalysis(MultipartFile file, UploadedDocumentType documentType) {
+        return summaryAnalysis(file.getResource(), documentType);
     }
 
 }

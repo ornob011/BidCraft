@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -21,6 +22,11 @@ public class SecurityConfiguration {
 
     public SecurityConfiguration(LoginPageFilter loginPageFilter) {
         this.loginPageFilter = loginPageFilter;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler postLoginRedirectHandler() {
+        return new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
@@ -50,6 +56,7 @@ public class SecurityConfiguration {
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/projects", true)
+                .successHandler(postLoginRedirectHandler())
                 .permitAll()
             )
             .logout(logout -> logout

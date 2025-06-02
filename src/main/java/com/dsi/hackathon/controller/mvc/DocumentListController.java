@@ -25,7 +25,7 @@ public class DocumentListController {
         this.projectRepository = projectRepository;
     }
 
-    @GetMapping("/document-list/{projectId}")
+    @GetMapping("/project/{projectId}/document-list")
     public String getDocumentList(@PathVariable("projectId") Integer projectId,
                                   Model model) {
         logger.info("Fetching document list for Project({})", projectId);

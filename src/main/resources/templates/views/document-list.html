@@ -16,7 +16,7 @@
         </div>
         <div th:with="tabs='Document List,Analysis',
                       icons='fa-file-upload,fa-brain',
-                      urls='/document-list/' + ${projectId} + ',/project/' + ${projectId} + '/analysis'">
+                      urls='/project/' + ${projectId} + '/document-list' + ',/project/' + ${projectId} + '/analysis'">
             <div th:replace="fragments/tab-view :: tab-view(${tabs}, ${icons}, ${urls}, 'Document List')"></div>
         </div>
 

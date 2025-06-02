@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/project-layout}" lang="en">
+
+<title layout:fragment="title">Project Settings</title>
+
+
+<section layout:fragment="contentBody">
+    <div class="d-flex flex-wrap">
+        <h5 class="font-size-16 me-3" th:text="${T(com.dsi.hackathon.enums.ProjectTab).SETTINGS?.label}"></h5>
+    </div>
+    <hr class="mt-2">
+    <div class="d-flex flex-wrap gap-3">
+        <div class="card w-100">
+            <div class="card-header fw-bold">Delete Project</div>
+            <div class="card-body d-flex justify-content-between">
+                <span>Permanently delete project and all related files</span>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#projectDeleteModal">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="modalBlock">
+    <div class="modal fade" id="projectDeleteModal" tabindex="-1" aria-labelledby="projectDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="projectDeleteModalLabel">Confirm Delete</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <b th:text="${project?.name}"></b> project?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a class="btn btn-danger" th:href="@{/project/{projectId}/delete(projectId=${project?.id})}">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<script layout:fragment="localJsCodeBlock" type="text/javascript" th:inline="javascript">
+
+</script>
+</html>

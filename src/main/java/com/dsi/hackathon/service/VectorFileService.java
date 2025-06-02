@@ -1,5 +1,6 @@
 package com.dsi.hackathon.service;
 
+import com.dsi.hackathon.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +35,15 @@ public class VectorFileService {
 
         List<Document> documentList = documentReader.read();
 
-        if (!ObjectUtils.isEmpty(metaData)) {
-            documentList.forEach(document -> document.getMetadata().putAll(metaData));
+        Map<String, String> stringMetaData = Utils.convertMetaDataToStringMap(metaData);
+
+        if (!ObjectUtils.isEmpty(stringMetaData)) {
+            documentList.forEach(document -> document.getMetadata().putAll(stringMetaData));
         }
 
         DocumentTransformer transformer = new TokenTextSplitter();
         vectorStore.accept(transformer.apply(documentList));
+
         logger.info("Saved vector file: {}", resource.getFilename());
     }
 

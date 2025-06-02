@@ -28,8 +28,11 @@
         </thead>
         <tbody>
         <tr th:each="file : ${files}">
-            <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
-                class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.name}]]</a></td>
+            <td>
+                <a th:href="@{/api/document-viewer/{id}(id=${file.id})}" class="text-dark fw-medium" target="_blank">
+                    <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.name}]]
+                </a>
+            </td>
             <td th:text="${#temporals.format(file.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td>[[${file.readableSize}]]</td>
             <td class="text-center">
@@ -115,7 +118,7 @@
                 files.forEach(function (file) {
                     $tbody.append(`
                     <tr>
-                        <td><a href="javascript:void(0);" class="text-dark fw-medium">
+                        <td><a href="/api/document-viewer/${file.id}" class="text-dark fw-medium" target="_blank">
                             <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
                             ${file.name}</a>
                         </td>

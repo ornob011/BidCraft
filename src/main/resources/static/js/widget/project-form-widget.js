@@ -62,6 +62,9 @@ $.widget("ros.projectFormWidget", {
                                 type: "POST",
                                 contentType: "application/json",
                                 data: JSON.stringify(projectDto),
+                                beforeSend: function () {
+                                    Ros.APP.startLoading();
+                                },
                                 success: function (response) {
                                     if (response && response.data) {
                                         window.location.href = `/project/${response.data}/document-list`;
@@ -84,6 +87,8 @@ $.widget("ros.projectFormWidget", {
                                             .html(`<strong>Unexpected error occurred.</strong>`);
                                     }
                                 }
+                            }).always(function () {
+                                Ros.APP.stopLoading();
                             });
 
                             return false;

@@ -79,6 +79,7 @@
     background-size: 80px 80px;
     background: #13121296 url('/images/loading.gif') no-repeat center;
     opacity: 0.90;
+    display: block;
 }
 
 @media (max-width: 768px) {

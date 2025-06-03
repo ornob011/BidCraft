@@ -44,9 +44,9 @@
 
 <span th:fragment="baseJsHead" th:remove="tag">
     <script type="text/javascript">
-    $(document).ready(function () {
-        Ros.APP.stopLoading();
-    });
+        $(document).ready(function () {
+            Ros.APP.markPageReady();
+        });
 </script>
 
 <!-- Custom js block -->

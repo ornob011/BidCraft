@@ -14,17 +14,17 @@ $.widget("ros.documentListWidget", {
         self._bindDeleteHandler();
     },
 
-    formatDate: function(dateString) {
+    formatDate: function (dateString) {
         const date = new Date(dateString);
         return date.toLocaleString();
     },
 
-    refreshFileTable: function(projectId) {
+    refreshFileTable: function (projectId) {
         const self = this;
         $.ajax({
             url: '/get-files/' + projectId,
             type: 'GET',
-            success: function(files) {
+            success: function (files) {
                 const $tbody = self.el.fileTable;
                 $tbody.empty();
 
@@ -37,7 +37,7 @@ $.widget("ros.documentListWidget", {
                     return;
                 }
 
-                files.forEach(function(file) {
+                files.forEach(function (file) {
                     $tbody.append(`
                         <tr>
                             <td>
@@ -60,7 +60,7 @@ $.widget("ros.documentListWidget", {
                     `);
                 });
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 bootbox.alert({
                     closeButton: false,
                     title: '<span class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Error</span>',
@@ -70,9 +70,9 @@ $.widget("ros.documentListWidget", {
         });
     },
 
-    _bindUploadForm: function() {
+    _bindUploadForm: function () {
         const self = this;
-        self.el.uploadForm.off('submit.rosDocList').on('submit.rosDocList', function(e) {
+        self.el.uploadForm.off('submit.rosDocList').on('submit.rosDocList', function (e) {
             e.preventDefault();
             const formData = new FormData(this);
 
@@ -83,12 +83,15 @@ $.widget("ros.documentListWidget", {
                 processData: false,
                 contentType: false,
                 cache: false,
-                success: function(response) {
+                beforeSend: function () {
+                    Ros.APP.startLoading();
+                },
+                success: function (response) {
                     self.el.uploadForm[0].reset();
                     self.el.modal.modal('hide');
                     self.refreshFileTable(self.options.projectId);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     bootbox.alert({
                         closeButton: false,
                         title: '<span class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Error</span>',
@@ -97,13 +100,15 @@ $.widget("ros.documentListWidget", {
                     self.el.uploadForm[0].reset();
                     self.el.modal.modal('hide');
                 }
+            }).always(function () {
+                Ros.APP.stopLoading();
             });
         });
     },
 
-    _bindDeleteHandler: function() {
+    _bindDeleteHandler: function () {
         const self = this;
-        self.el.fileTable.off('click.rosDocList').on('click.rosDocList', '.btn-delete-file', function(e) {
+        self.el.fileTable.off('click.rosDocList').on('click.rosDocList', '.btn-delete-file', function (e) {
             e.preventDefault();
             const fileId = $(this).data('file-id');
 
@@ -121,21 +126,26 @@ $.widget("ros.documentListWidget", {
                         className: 'btn-secondary'
                     }
                 },
-                callback: function(result) {
+                callback: function (result) {
                     if (result) {
                         $.ajax({
                             url: '/api/delete-file/' + fileId,
                             type: 'DELETE',
-                            success: function() {
+                            beforeSend: function () {
+                                Ros.APP.startLoading();
+                            },
+                            success: function () {
                                 self.refreshFileTable(self.options.projectId);
                             },
-                            error: function(xhr, status, error) {
+                            error: function (xhr, status, error) {
                                 bootbox.alert({
                                     closeButton: false,
                                     title: '<span class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Error</span>',
                                     message: 'Sorry, we could not delete this file right now. Please try again later.'
                                 });
                             }
+                        }).always(function () {
+                            Ros.APP.stopLoading();
                         });
                     }
                 }

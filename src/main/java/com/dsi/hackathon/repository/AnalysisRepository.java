@@ -19,7 +19,6 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
     Optional<Analysis> findByProjectIdAndUploadedDocumentId(@Param("projectId") Integer projectId,
                                                             @Param("documentId") Integer documentId);
 
-    @Transactional(readOnly = true)
     @Query("select a from Analysis a where a.project.id = :id and a.uploadedDocument is null order by a.id limit 1")
     Optional<Analysis> findByProjectIdAndUploadedDocumentNull(@Param("id") Integer id);
 
@@ -34,4 +33,6 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select analysis from Analysis analysis where analysis.uploadedDocument in :documents order by analysis.uploadedDocument.id limit 1")
     List<Analysis> findByUploadedDocumentInWithLock(@Param("documents")Collection<UploadedDocument> documents);
+
+    List<Analysis> findAllByUploadedDocumentId(Integer documentId);
 }

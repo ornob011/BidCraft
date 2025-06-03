@@ -1,5 +1,6 @@
 package com.dsi.hackathon.service;
 
+import com.dsi.hackathon.enums.MetaDataLabel;
 import com.dsi.hackathon.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +12,11 @@ import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
+import org.springframework.ai.vectorstore.filter.Filter;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,5 +67,14 @@ public class VectorFileService {
                                         .build();
 
         return new PagePdfDocumentReader(resource, config);
+    }
+
+    @Transactional
+    public void deleteByMetaData(String metaKey,
+                                 String metaValue) {
+        Filter.Expression filterExpression = MetaDataLabel.valueOf(metaKey)
+                                                          .eq(metaValue);
+
+        vectorStore.delete(filterExpression);
     }
 }

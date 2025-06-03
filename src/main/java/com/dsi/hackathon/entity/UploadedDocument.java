@@ -32,7 +32,7 @@ public class UploadedDocument {
     private String attachmentName;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_bucket_id", nullable = false)
+    @JoinColumn(name = "file_bucket_id")
     private FileBucket fileBucket;
 
     @CreationTimestamp

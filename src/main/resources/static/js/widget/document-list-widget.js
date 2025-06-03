@@ -16,8 +16,8 @@ $.widget("ros.documentListWidget", {
         self.el.uploadForm = $(self.options.uploadFormSelector);
         self.el.modal = $(self.options.modalSelector);
 
-        // Bind upload form submit
         self._bindUploadForm();
+        self._bindDeleteHandler();
 
         // Initial table load
         if (self.options.projectId) {
@@ -65,7 +65,7 @@ $.widget("ros.documentListWidget", {
                                 <a href="/project/${file.projectId}/analysis?documentId=${file.id}" class="btn btn-outline-success">
                                     <i class="fas fa-brain me-2"></i> Analyze
                                 </a>
-                                <button type="button" class="btn btn-outline-danger">
+                                <button type="button" class="btn btn-outline-danger btn-delete-file" data-file-id="${file.id}">
                                     <i class="fas fa-trash-alt me-2"></i> Delete
                                 </button>
                             </td>
@@ -79,7 +79,6 @@ $.widget("ros.documentListWidget", {
         });
     },
 
-    // Binds the upload form submit event
     _bindUploadForm: function() {
         const self = this;
         self.el.uploadForm.off('submit.rosDocList').on('submit.rosDocList', function(e) {
@@ -106,6 +105,26 @@ $.widget("ros.documentListWidget", {
                     self.el.modal.modal('hide');
                 }
             });
+        });
+    },
+
+    _bindDeleteHandler: function() {
+        const self = this;
+        self.el.fileTable.off('click.rosDocList').on('click.rosDocList', '.btn-delete-file', function(e) {
+            e.preventDefault();
+            const fileId = $(this).data('file-id');
+            if (confirm('Are you sure you want to delete this file?')) {
+                $.ajax({
+                    url: '/api/delete-file/' + fileId,
+                    type: 'DELETE',
+                    success: function() {
+                        self.refreshFileTable(self.options.projectId);
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error deleting file: ' + error);
+                    }
+                });
+            }
         });
     }
 });

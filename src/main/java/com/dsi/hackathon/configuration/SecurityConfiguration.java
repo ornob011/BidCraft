@@ -19,9 +19,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private final LoginPageFilter loginPageFilter;
+    private final String rememberMeKey;
+    private final int rememberMeTokenValiditySeconds;
 
-    public SecurityConfiguration(LoginPageFilter loginPageFilter) {
+    public SecurityConfiguration(
+        LoginPageFilter loginPageFilter,
+        @Value("${security.rememberme.key}") String rememberMeKey,
+        @Value("${security.rememberme.token-validity-seconds}") int rememberMeTokenValiditySeconds
+    ) {
         this.loginPageFilter = loginPageFilter;
+        this.rememberMeKey = rememberMeKey;
+        this.rememberMeTokenValiditySeconds = rememberMeTokenValiditySeconds;
     }
 
     @Bean
@@ -58,6 +66,11 @@ public class SecurityConfiguration {
                 .defaultSuccessUrl("/projects", true)
                 .successHandler(postLoginRedirectHandler())
                 .permitAll()
+            )
+            .rememberMe(rememberMe -> rememberMe
+                .key(rememberMeKey)
+                .rememberMeParameter("remember-me")
+                .tokenValiditySeconds(rememberMeTokenValiditySeconds)
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")

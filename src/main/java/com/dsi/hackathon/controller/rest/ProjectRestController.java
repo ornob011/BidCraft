@@ -1,13 +1,12 @@
 package com.dsi.hackathon.controller.rest;
 
 import com.dsi.hackathon.dto.ProjectDto;
-import com.dsi.hackathon.entity.Analysis;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.User;
 import com.dsi.hackathon.pojo.ApiResponse;
-import com.dsi.hackathon.repository.AnalysisRepository;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UserRepository;
+import com.dsi.hackathon.service.AnalysisService;
 import com.dsi.hackathon.util.Utils;
 import jakarta.validation.Valid;
 import org.springframework.context.MessageSource;
@@ -26,16 +25,16 @@ public class ProjectRestController {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final MessageSource messageSource;
-    private final AnalysisRepository analysisRepository;
+    private final AnalysisService analysisService;
 
     public ProjectRestController(ProjectRepository projectRepository,
                                  UserRepository userRepository,
                                  MessageSource messageSource,
-                                 AnalysisRepository analysisRepository) {
+                                 AnalysisService analysisService) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.messageSource = messageSource;
-        this.analysisRepository = analysisRepository;
+        this.analysisService = analysisService;
     }
 
     @PostMapping("/create-project")
@@ -68,9 +67,7 @@ public class ProjectRestController {
         project.setUser(user);
         projectRepository.save(project);
 
-        Analysis analysis = new Analysis();
-        analysis.setProject(project);
-        analysisRepository.save(analysis);
+        analysisService.generateAnalysis(project, null);
 
         String successMessage = Utils.getMessageFromMessageSource(messageSource, "project.create.success");
 

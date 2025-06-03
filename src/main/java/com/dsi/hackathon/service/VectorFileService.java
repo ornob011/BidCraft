@@ -68,13 +68,4 @@ public class VectorFileService {
 
         return new PagePdfDocumentReader(resource, config);
     }
-
-    @Transactional
-    public void deleteByMetaData(String metaKey,
-                                 String metaValue) {
-        Filter.Expression filterExpression = MetaDataLabel.valueOf(metaKey)
-                                                          .eq(metaValue);
-
-        vectorStore.delete(filterExpression);
-    }
 }

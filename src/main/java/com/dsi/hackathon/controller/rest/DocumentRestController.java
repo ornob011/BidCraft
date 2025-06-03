@@ -37,7 +37,12 @@ public class DocumentRestController {
     private final MinioCleanupService minioCleanupService;
     private final FileBucketRepository fileBucketRepository;
 
-    public DocumentRestController(DocumentService documentService, UploadedDocumentRepository uploadedDocumentRepository, AnalysisRepository analysisRepository, VectorFileService vectorFileService, MinioCleanupService minioCleanupService, FileBucketRepository fileBucketRepository) {
+    public DocumentRestController(DocumentService documentService,
+                                  UploadedDocumentRepository uploadedDocumentRepository,
+                                  AnalysisRepository analysisRepository,
+                                  VectorFileService vectorFileService,
+                                  MinioCleanupService minioCleanupService,
+                                  FileBucketRepository fileBucketRepository) {
         this.documentService = documentService;
         this.uploadedDocumentRepository = uploadedDocumentRepository;
         this.analysisRepository = analysisRepository;

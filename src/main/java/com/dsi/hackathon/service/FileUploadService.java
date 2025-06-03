@@ -69,7 +69,7 @@ public class FileUploadService {
     public FileBucket uploadFile(MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-        // Upload to Minio
+        // Upload to MinIO
         minioClient.putObject(
             PutObjectArgs.builder()
                          .bucket(minioProperties.getBucketName())

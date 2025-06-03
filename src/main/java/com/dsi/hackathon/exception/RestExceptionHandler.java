@@ -30,4 +30,20 @@ public class RestExceptionHandler {
 
         return problem;
     }
+
+    @ExceptionHandler(DataNotFoundException.class)
+    public ProblemDetail handleDataNotFoundException(DataNotFoundException ex,
+                                                     HttpServletRequest request) {
+        logger.warn("DataNotFoundException: ", ex);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ProblemDetail problem = ProblemDetail.forStatus(status);
+
+        problem.setTitle(status.getReasonPhrase());
+        problem.setDetail(ex.getMessage());
+        problem.setInstance(URI.create(request.getRequestURI()));
+
+        return problem;
+    }
+
 }

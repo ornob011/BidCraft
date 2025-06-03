@@ -26,6 +26,13 @@
         </div>
         <div id="summaryDiv" class="card-body" th:text="${analysis?.summary ?: 'Summary not available.'}">
         </div>
+        <div th:if="${analysis?.uploadedDocument != null || not #arrays.isEmpty(analysis?.project?.uploadedDocuments)}">
+            Generating Summary....
+        </div>
+        <div th:if="${#arrays.isEmpty(analysis?.project?.uploadedDocuments)}">
+            Please upload project related documents for analysis from
+            <a th:href="@{/project/{projectId}/document-list(projectId=${project?.id})}">Document list</a>
+        </div>
     </div>
 </section>
 

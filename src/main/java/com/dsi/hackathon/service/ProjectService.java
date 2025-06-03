@@ -38,9 +38,9 @@ public class ProjectService {
                                            .orElseThrow(DataNotFoundException.supplier(Project.class, projectId));
 
         List<FileBucket> fileBucketList = project.getUploadedDocuments()
-                                       .stream()
-                                       .map(UploadedDocument::getFileBucket)
-                                       .toList();
+                                                 .stream()
+                                                 .map(UploadedDocument::getFileBucket)
+                                                 .toList();
 
         // Delete physical files
         for (FileBucket fileBucket : fileBucketList) {

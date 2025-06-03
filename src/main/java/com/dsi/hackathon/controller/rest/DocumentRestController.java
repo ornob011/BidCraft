@@ -4,6 +4,7 @@ import com.dsi.hackathon.entity.Analysis;
 import com.dsi.hackathon.entity.FileBucket;
 import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.MetaDataLabel;
+import com.dsi.hackathon.exception.DataNotFoundException;
 import com.dsi.hackathon.repository.AnalysisRepository;
 import com.dsi.hackathon.repository.FileBucketRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
@@ -61,22 +62,23 @@ public class DocumentRestController {
     @Transactional
     @DeleteMapping("/api/delete-file/{documentId}")
     public ResponseEntity<?> deleteFile(@PathVariable("documentId") Integer documentId) {
-        UploadedDocument doc = uploadedDocumentRepository.findById(documentId)
-                                                         .orElse(null);
+        UploadedDocument uploadedDocument = uploadedDocumentRepository.findById(documentId)
+                                                                      .orElseThrow(
+                                                                          DataNotFoundException.supplier(
+                                                                              UploadedDocument.class,
+                                                                              documentId
+                                                                          )
+                                                                      );
 
-        if (Objects.isNull(doc)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<Analysis> analyses = analysisRepository.findAllByUploadedDocumentId(documentId);
-        analysisRepository.deleteAll(analyses);
+        List<Analysis> analysisList = analysisRepository.findAllByUploadedDocumentId(documentId);
+        analysisRepository.deleteAll(analysisList);
 
         vectorFileService.deleteByMetaData(
             MetaDataLabel.UPLOADED_DOC_ID.name(),
             documentId.toString()
         );
 
-        FileBucket fileBucket = doc.getFileBucket();
+        FileBucket fileBucket = uploadedDocument.getFileBucket();
 
         if (Objects.nonNull(fileBucket)) {
             minioCleanupService.deleteFileAsync(
@@ -86,7 +88,7 @@ public class DocumentRestController {
             fileBucketRepository.delete(fileBucket);
         }
 
-        uploadedDocumentRepository.delete(doc);
+        uploadedDocumentRepository.delete(uploadedDocument);
 
         return ResponseEntity.ok().build();
     }

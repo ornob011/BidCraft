@@ -20,11 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class AnalysisService {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
+
     private final AnalysisRepository analysisRepository;
     private final SummaryAnalysisService summaryAnalysisService;
     private final FileUploadService fileUploadService;
 
-    public AnalysisService(AnalysisRepository analysisRepository, SummaryAnalysisService summaryAnalysisService, FileUploadService fileUploadService) {
+    public AnalysisService(AnalysisRepository analysisRepository,
+                           SummaryAnalysisService summaryAnalysisService,
+                           FileUploadService fileUploadService) {
         this.analysisRepository = analysisRepository;
         this.summaryAnalysisService = summaryAnalysisService;
         this.fileUploadService = fileUploadService;

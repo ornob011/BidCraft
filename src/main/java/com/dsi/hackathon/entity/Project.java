@@ -41,6 +41,14 @@ public class Project {
     )
     private List<UploadedDocument> uploadedDocuments;
 
+    @OneToMany(
+        mappedBy = "project",
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private List<Analysis> analysisList;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

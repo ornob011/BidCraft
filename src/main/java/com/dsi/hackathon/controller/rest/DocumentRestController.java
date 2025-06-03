@@ -10,9 +10,9 @@ import com.dsi.hackathon.repository.FileBucketRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
 import com.dsi.hackathon.service.DocumentService;
 import com.dsi.hackathon.service.MinioCleanupService;
-import com.dsi.hackathon.service.VectorFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,22 +33,22 @@ public class DocumentRestController {
     private final DocumentService documentService;
     private final UploadedDocumentRepository uploadedDocumentRepository;
     private final AnalysisRepository analysisRepository;
-    private final VectorFileService vectorFileService;
     private final MinioCleanupService minioCleanupService;
     private final FileBucketRepository fileBucketRepository;
+    private final PgVectorStore vectorStore;
 
     public DocumentRestController(DocumentService documentService,
                                   UploadedDocumentRepository uploadedDocumentRepository,
                                   AnalysisRepository analysisRepository,
-                                  VectorFileService vectorFileService,
                                   MinioCleanupService minioCleanupService,
-                                  FileBucketRepository fileBucketRepository) {
+                                  FileBucketRepository fileBucketRepository,
+                                  PgVectorStore vectorStore) {
         this.documentService = documentService;
         this.uploadedDocumentRepository = uploadedDocumentRepository;
         this.analysisRepository = analysisRepository;
-        this.vectorFileService = vectorFileService;
         this.minioCleanupService = minioCleanupService;
         this.fileBucketRepository = fileBucketRepository;
+        this.vectorStore = vectorStore;
     }
 
     @GetMapping("/api/document-viewer/{documentId}")
@@ -78,9 +78,8 @@ public class DocumentRestController {
         List<Analysis> analysisList = analysisRepository.findAllByUploadedDocumentId(documentId);
         analysisRepository.deleteAll(analysisList);
 
-        vectorFileService.deleteByMetaData(
-            MetaDataLabel.UPLOADED_DOC_ID.name(),
-            documentId.toString()
+        vectorStore.delete(
+            MetaDataLabel.UPLOADED_DOC_ID.eq(documentId)
         );
 
         FileBucket fileBucket = uploadedDocument.getFileBucket();

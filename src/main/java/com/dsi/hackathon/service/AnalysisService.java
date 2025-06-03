@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,6 +53,11 @@ public class AnalysisService {
 
         if (Objects.nonNull(analysis.getUploadedDocument())) {
             throw new IllegalArgumentException("Analysis(%d) not targeted for project".formatted(analysis.getId()));
+        }
+
+        if (ObjectUtils.isEmpty(project.getUploadedDocuments())) {
+            logger.info("No uploaded documents found for Project({}) Analysis({})", project.getId(), analysis.getId());
+            return false;
         }
 
         logger.info("Analyzing Project({}) Analysis({})", project.getId(), analysis.getId());

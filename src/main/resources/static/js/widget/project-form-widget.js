@@ -67,7 +67,7 @@ $.widget("ros.projectFormWidget", {
                                 },
                                 success: function (response) {
                                     if (response && response.data) {
-                                        window.location.href = `/project/${response.data}/document-list`;
+                                        window.location.href = `/project/${response.data}`;
                                     } else {
                                         $errorBox
                                             .removeClass("d-none")

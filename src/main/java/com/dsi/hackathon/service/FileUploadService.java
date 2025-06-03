@@ -1,14 +1,12 @@
 package com.dsi.hackathon.service;
 
 import com.dsi.hackathon.configuration.properties.MinioProperties;
-import com.dsi.hackathon.entity.Analysis;
 import com.dsi.hackathon.entity.FileBucket;
 import com.dsi.hackathon.entity.Project;
 import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.MetaDataLabel;
 import com.dsi.hackathon.enums.UploadedDocumentType;
 import com.dsi.hackathon.exception.FileStorageException;
-import com.dsi.hackathon.repository.AnalysisRepository;
 import com.dsi.hackathon.repository.FileBucketRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
 import io.minio.GetObjectArgs;
@@ -45,7 +43,7 @@ public class FileUploadService {
     private final UploadedDocumentRepository uploadedDocumentRepository;
     private final MinioCleanupService minioCleanupService;
     private final FileUploadService self;
-    private final AnalysisRepository analysisRepository;
+    private final AnalysisService analysisService;
 
     public FileUploadService(MinioClient minioClient,
                              MinioProperties minioProperties,
@@ -54,7 +52,7 @@ public class FileUploadService {
                              UploadedDocumentRepository uploadedDocumentRepository,
                              MinioCleanupService minioCleanupService,
                              @Lazy FileUploadService self,
-                             AnalysisRepository analysisRepository) {
+                             AnalysisService analysisService) {
         this.minioClient = minioClient;
         this.minioProperties = minioProperties;
         this.fileBucketRepository = fileBucketRepository;
@@ -62,7 +60,7 @@ public class FileUploadService {
         this.uploadedDocumentRepository = uploadedDocumentRepository;
         this.minioCleanupService = minioCleanupService;
         this.self = self;
-        this.analysisRepository = analysisRepository;
+        this.analysisService = analysisService;
     }
 
     @Transactional
@@ -121,10 +119,7 @@ public class FileUploadService {
         uploadedDocument.setFileBucket(fileBucket);
         uploadedDocument = uploadedDocumentRepository.save(uploadedDocument);
 
-        Analysis analysis = new Analysis();
-        analysis.setProject(project);
-        analysis.setUploadedDocument(uploadedDocument);
-        analysisRepository.save(analysis);
+        analysisService.generateAnalysis(project, uploadedDocument);
 
         return uploadedDocument;
     }

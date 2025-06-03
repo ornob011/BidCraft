@@ -52,7 +52,7 @@ public class FileUploadService {
                              UploadedDocumentRepository uploadedDocumentRepository,
                              MinioCleanupService minioCleanupService,
                              @Lazy FileUploadService self,
-                             AnalysisService analysisService) {
+                             @Lazy AnalysisService analysisService) {
         this.minioClient = minioClient;
         this.minioProperties = minioProperties;
         this.fileBucketRepository = fileBucketRepository;

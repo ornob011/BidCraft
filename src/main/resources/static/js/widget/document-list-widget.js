@@ -1,37 +1,28 @@
-// Widget definition
 $.widget("ros.documentListWidget", {
     options: {
         projectId: null,
-        fileTableSelector: 'tbody',
-        uploadFormSelector: '#uploadForm',
-        modalSelector: '#myModal',
     },
 
     _create: function () {
         const self = this;
-
-        // Cache commonly used elements
         self.el = {};
-        self.el.fileTable = $(self.options.fileTableSelector);
-        self.el.uploadForm = $(self.options.uploadFormSelector);
-        self.el.modal = $(self.options.modalSelector);
+        self.el.fileTable = $("tbody");
+        self.el.uploadForm = $("#uploadForm");
+        self.el.modal = $("#myModal");
 
         self._bindUploadForm();
         self._bindDeleteHandler();
 
-        // Initial table load
         if (self.options.projectId) {
             self.refreshFileTable(self.options.projectId);
         }
     },
 
-    // Formats date string to local
     formatDate: function(dateString) {
         const date = new Date(dateString);
         return date.toLocaleString();
     },
 
-    // Loads file list into table
     refreshFileTable: function(projectId) {
         const self = this;
         $.ajax({
@@ -74,7 +65,11 @@ $.widget("ros.documentListWidget", {
                 });
             },
             error: function(xhr, status, error) {
-                alert('Error refreshing table: ' + error);
+                bootbox.alert({
+                    closeButton: false,
+                    title: '<span class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Error</span>',
+                    message: 'Sorry, we could not load your files at the moment. Please try again in a few moments or refresh the page.'
+                });
             }
         });
     },
@@ -93,14 +88,16 @@ $.widget("ros.documentListWidget", {
                 contentType: false,
                 cache: false,
                 success: function(response) {
-                    // Reset form and modal
                     self.el.uploadForm[0].reset();
                     self.el.modal.modal('hide');
-                    // Refresh file table
                     self.refreshFileTable(self.options.projectId);
                 },
                 error: function(xhr, status, error) {
-                    alert('Error uploading file: ' + error);
+                    bootbox.alert({
+                        closeButton: false,
+                        title: '<span class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Error</span>',
+                        message: 'Sorry, your file could not be uploaded right now. Please try again in a few moments.'
+                    });
                     self.el.uploadForm[0].reset();
                     self.el.modal.modal('hide');
                 }
@@ -113,18 +110,40 @@ $.widget("ros.documentListWidget", {
         self.el.fileTable.off('click.rosDocList').on('click.rosDocList', '.btn-delete-file', function(e) {
             e.preventDefault();
             const fileId = $(this).data('file-id');
-            if (confirm('Are you sure you want to delete this file?')) {
-                $.ajax({
-                    url: '/api/delete-file/' + fileId,
-                    type: 'DELETE',
-                    success: function() {
-                        self.refreshFileTable(self.options.projectId);
+
+            bootbox.confirm({
+                closeButton: false,
+                title: '<span class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Delete Document</span>',
+                message: 'Are you sure you want to delete this file?',
+                buttons: {
+                    confirm: {
+                        label: '<i class="fas fa-trash-alt me-2"></i> Delete',
+                        className: 'btn-danger'
                     },
-                    error: function(xhr, status, error) {
-                        alert('Error deleting file: ' + error);
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-secondary'
                     }
-                });
-            }
+                },
+                callback: function(result) {
+                    if (result) {
+                        $.ajax({
+                            url: '/api/delete-file/' + fileId,
+                            type: 'DELETE',
+                            success: function() {
+                                self.refreshFileTable(self.options.projectId);
+                            },
+                            error: function(xhr, status, error) {
+                                bootbox.alert({
+                                    closeButton: false,
+                                    title: '<span class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Error</span>',
+                                    message: 'Sorry, we could not delete this file right now. Please try again later.'
+                                });
+                            }
+                        });
+                    }
+                }
+            });
         });
     }
 });

@@ -6,7 +6,6 @@ import com.dsi.hackathon.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -23,7 +22,6 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    @Transactional(readOnly = true)
     public String getProjectPage(Model model) {
         Integer loggedInUserId = Utils.getLoggedInUserId();
 

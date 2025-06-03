@@ -26,7 +26,7 @@
         </div>
         <div id="summaryDiv" class="card-body" th:text="${analysis?.summary ?: 'Summary not available.'}">
         </div>
-        <div th:if="${analysis?.uploadedDocument != null || not #arrays.isEmpty(analysis?.project?.uploadedDocuments)}">
+        <div th:if="${analysis?.summary == null && (analysis?.uploadedDocument != null || not #arrays.isEmpty(analysis?.project?.uploadedDocuments))}">
             Generating Summary....
         </div>
         <div th:if="${#arrays.isEmpty(analysis?.project?.uploadedDocuments)}">

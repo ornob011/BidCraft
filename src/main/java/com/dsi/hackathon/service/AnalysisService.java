@@ -104,7 +104,7 @@ public class AnalysisService {
             throw new IllegalArgumentException("Analysis(%d) not targeted for UploadedDocument".formatted(analysis.getId()));
         }
 
-        logger.info("Analyzing UploadedDocument({}), Analysis({})", uploadedDocument.getId(), analysis.getId());
+        logger.info("Analyzing UploadedDocument({}) and Analysis({})", uploadedDocument.getId(), analysis.getId());
 
         if (Boolean.TRUE.equals(analysis.getIsAnalyzed()) && !Boolean.TRUE.equals(reAnalyze)) {
             return false;

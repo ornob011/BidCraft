@@ -25,9 +25,6 @@ $.widget("ros.documentAnalysisWidget", {
             $.ajax({
                 url: `/api/analysis/${self.options.analysisId}/summary`,
                 type: "POST",
-                beforeSend: function () {
-                    Ros.APP.startLoading();
-                },
                 success: function (response) {
                     if (response && response.data) {
                         self.parseMarkDown(self.el.summaryDiv, response.data);
@@ -38,8 +35,6 @@ $.widget("ros.documentAnalysisWidget", {
                 error: function (xhr) {
                     self.el.summaryDiv.html('Failed to generate analysis. Please reload page and try again.');
                 }
-            }).always(function () {
-                Ros.APP.stopLoading();
             });
         }
     },

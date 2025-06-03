@@ -83,9 +83,6 @@ $.widget("ros.documentListWidget", {
                 processData: false,
                 contentType: false,
                 cache: false,
-                beforeSend: function () {
-                    Ros.APP.startLoading();
-                },
                 success: function (response) {
                     self.el.uploadForm[0].reset();
                     self.el.modal.modal('hide');
@@ -100,8 +97,6 @@ $.widget("ros.documentListWidget", {
                     self.el.uploadForm[0].reset();
                     self.el.modal.modal('hide');
                 }
-            }).always(function () {
-                Ros.APP.stopLoading();
             });
         });
     },
@@ -131,9 +126,6 @@ $.widget("ros.documentListWidget", {
                         $.ajax({
                             url: '/api/delete-file/' + fileId,
                             type: 'DELETE',
-                            beforeSend: function () {
-                                Ros.APP.startLoading();
-                            },
                             success: function () {
                                 self.refreshFileTable(self.options.projectId);
                             },
@@ -144,8 +136,6 @@ $.widget("ros.documentListWidget", {
                                     message: 'Sorry, we could not delete this file right now. Please try again later.'
                                 });
                             }
-                        }).always(function () {
-                            Ros.APP.stopLoading();
                         });
                     }
                 }

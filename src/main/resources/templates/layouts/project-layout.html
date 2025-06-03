@@ -42,14 +42,6 @@
     <!-- Modals end here -->
 </div>
 
-<span th:fragment="baseJsHead" th:remove="tag">
-    <script type="text/javascript">
-        $(document).ready(function () {
-            Ros.APP.markPageReady();
-        });
-    </script>
-</span>
-
 <!-- Custom js block -->
 <th:block layout:fragment="customJsImportBlock"></th:block>
 

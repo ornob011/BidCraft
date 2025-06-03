@@ -7,10 +7,19 @@
 <div>
     <div th:insert="~{fragments/top-menu :: top-menu}"></div>
 
+    <div class="se-pre-con"></div>
+
     <div layout:fragment="contentBody" >
 <!--    common layout content body  -->
     </div>
 </div>
+
+<span th:fragment="baseJsHead" th:remove="tag">
+    <script type="text/javascript">
+    $(document).ready(function () {
+        Ros.APP.stopLoading();
+    });
+</script>
 
 <!-- Custom js block -->
 <span layout:fragment="customJsImportBlock" th:remove="tag"></span>

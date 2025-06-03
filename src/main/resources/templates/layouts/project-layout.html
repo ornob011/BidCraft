@@ -12,6 +12,8 @@
 <div class="page-container">
     <header th:insert="~{fragments/top-menu :: top-menu}"></header>
 
+    <div class="se-pre-con"></div>
+
     <main>
         <div class="container py-4 my-3">
             <!-- Project Info -->
@@ -39,6 +41,13 @@
     </div>
     <!-- Modals end here -->
 </div>
+
+<span th:fragment="baseJsHead" th:remove="tag">
+    <script type="text/javascript">
+    $(document).ready(function () {
+        Ros.APP.stopLoading();
+    });
+</script>
 
 <!-- Custom js block -->
 <th:block layout:fragment="customJsImportBlock"></th:block>

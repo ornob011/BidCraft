@@ -59,7 +59,7 @@ public class AnalysisService {
         }
 
         if (ObjectUtils.isEmpty(project.getUploadedDocuments())) {
-            logger.info("No uploaded documents found for Project({}) Analysis({})", project.getId(), analysis.getId());
+            logger.info("No uploaded documents found for Project({}) and Analysis({})", project.getId(), analysis.getId());
             return false;
         }
 

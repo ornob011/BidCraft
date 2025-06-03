@@ -24,14 +24,14 @@ public class ProjectController {
 
     @GetMapping("/projects")
     @Transactional(readOnly = true)
-    public String dashboard(Model model) {
+    public String getProjectPage(Model model) {
         Integer loggedInUserId = Utils.getLoggedInUserId();
 
         List<Project> projectList = projectRepository.findAllByUserId(loggedInUserId);
 
         model.addAttribute("projectList", projectList);
 
-        logger.info("Accessed dashboard page for User({})", loggedInUserId);
+        logger.info("Accessed project page for User({})", loggedInUserId);
 
         return "views/project";
     }

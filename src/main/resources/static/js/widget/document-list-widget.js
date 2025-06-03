@@ -12,10 +12,6 @@ $.widget("ros.documentListWidget", {
 
         self._bindUploadForm();
         self._bindDeleteHandler();
-
-        if (self.options.projectId) {
-            self.refreshFileTable(self.options.projectId);
-        }
     },
 
     formatDate: function(dateString) {

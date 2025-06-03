@@ -1,14 +1,14 @@
-package com.dsi.hackathon.controller;
+package com.dsi.hackathon.controller.rest;
 
 import com.dsi.hackathon.dto.UploadedDocumentDto;
 import com.dsi.hackathon.entity.Project;
-import com.dsi.hackathon.entity.UploadedDocument;
 import com.dsi.hackathon.enums.UploadedDocumentType;
+import com.dsi.hackathon.exception.DataNotFoundException;
 import com.dsi.hackathon.repository.ProjectRepository;
 import com.dsi.hackathon.repository.UploadedDocumentRepository;
-import com.dsi.hackathon.repository.UserRepository;
 import com.dsi.hackathon.service.FileUploadService;
 import com.dsi.hackathon.util.Utils;
+import io.minio.errors.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,15 +18,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class FileUploadController {
+public class FileUploadRestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadRestController.class);
+
     private final FileUploadService uploadService;
-    private final UserRepository userRepository;
     private final MessageSource messageSource;
     private final ProjectRepository projectRepository;
     private final UploadedDocumentRepository uploadedDocumentRepository;
@@ -35,19 +38,24 @@ public class FileUploadController {
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
                                              @RequestParam("type") UploadedDocumentType type,
                                              @PathVariable("projectId") Integer projectId,
-                                             HttpServletRequest request) throws Exception {
+                                             HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
 
-        Integer userId = Utils.getLoggedInUserId();
-        Project project = projectRepository.findById(projectId).orElseThrow(() -> new IllegalArgumentException("Project not found"));
+        Project project = projectRepository.findById(projectId)
+                                           .orElseThrow(
+                                               DataNotFoundException.supplier(
+                                                   Project.class,
+                                                   projectId
+                                               )
+                                           );
 
-        uploadService.uploadFileAndStoreInVectorDB(file, type, project, userId);
+        uploadService.uploadFileAndStoreInVectorDB(file, type, project);
         logger.info("Successfully added file to vector DB: {}", file.getOriginalFilename());
 
         Utils.setSuccessMessageCode(request, messageSource, "file.upload.successful");
 
         return ResponseEntity.ok("File uploaded successfully.");
     }
-    
+
     @GetMapping("/get-files/{projectId}")
     public ResponseEntity<List<UploadedDocumentDto>> getFiles(@PathVariable("projectId") Integer projectId) {
         List<UploadedDocumentDto> documents = uploadedDocumentRepository.findUploadedDocumentByProjectId(projectId);

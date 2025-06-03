@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,4 +33,6 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Integer> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select analysis from Analysis analysis where analysis.uploadedDocument in :documents order by analysis.uploadedDocument.id limit 1")
     List<Analysis> findByUploadedDocumentInWithLock(@Param("documents")Collection<UploadedDocument> documents);
+
+    List<Analysis> findAllByUploadedDocumentId(Integer documentId);
 }

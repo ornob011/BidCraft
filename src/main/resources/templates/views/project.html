@@ -7,7 +7,7 @@
 </head>
 <body>
 <section layout:fragment="contentBody">
-    <div class="container py-5">
+    <div class="container py-5 my-4">
         <!-- Header with Bootstrap styling -->
         <div class="row mb-4">
             <div class="col-12">
@@ -22,11 +22,6 @@
                          aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
-        </div>
-
-        <!--        document list button  remove this later-->
-        <div class="mb-3">
-            <a href="document-list/2"><button type="button" class="btn btn-success">Document list</button></a>
         </div>
 
         <!-- Company Information Section -->
@@ -83,12 +78,12 @@
 </section>
 
 <span layout:fragment="customJsImportBlock">
-    <script type="text/javascript" th:src="@{/js/widget/dashboard-form-widget.js}"></script>
+    <script type="text/javascript" th:src="@{/js/widget/project-form-widget.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootbox/5.5.2/bootbox.all.js}"></script>
 </span>
 
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
-    $("body").dashboardFormWidget(
+    $("body").projectFormWidget(
         {}
     );
 </script>

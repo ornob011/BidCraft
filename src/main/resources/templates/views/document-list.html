@@ -21,30 +21,36 @@
         <thead class="table-success">
         <tr>
             <th scope="col">Name</th>
-            <th scope="col">Date modified</th>
-            <th scope="col">Size</th>
+            <th scope="col">Uploaded date</th>
+            <th scope="col">Document type</th>
             <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="file : ${files}">
-            <td><a href="javascript: void(0);" class="text-dark fw-medium"><i
-                class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.name}]]</a></td>
+            <td>
+                <a th:href="@{/api/document-viewer/{id}(id=${file?.id})}" class="text-dark fw-medium" target="_blank">
+                    <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i> [[${file.name}]]
+                </a>
+            </td>
             <td th:text="${#temporals.format(file.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td>[[${file.readableSize}]]</td>
+            <td>[[${file?.type?.displayName}]]</td>
             <td class="text-center">
-                <button type="button" class="btn btn-outline-success">
+                <a th:href="@{/project/{projectId}/analysis(documentId=${file.id},projectId=${file.projectId})}"
+                   class="btn btn-outline-success">
                     <i class="fas fa-brain me-2"></i>
                     Analyze
-                </button>
-                <button type="button" class="btn btn-outline-danger">
+                </a>
+                <button type="button"
+                        class="btn btn-outline-danger btn-delete-file"
+                        th:attr="data-file-id=${file.id}">
                     <i class="fas fa-trash-alt me-2"></i>
                     Delete
                 </button>
             </td>
         </tr>
         <tr class="text-center" th:if="${files.isEmpty()}">
-            <td colspan="4" class="text-danger">No Data Found!</td>
+            <td colspan="4" class="fw-bold text-danger">No Data Found!</td>
         </tr>
         </tbody>
     </table>
@@ -89,94 +95,15 @@
     </div>
 </th:block>
 
-<script layout:fragment="localJsCodeBlock" type="text/javascript" th:inline="javascript">
-    function formatFileSize(bytes) {
-        if (!bytes || bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
+<span layout:fragment="customJsImportBlock">
+    <script type="text/javascript" th:src="@{/webjars/bootbox/5.5.2/bootbox.all.js}"></script>
+    <script type="text/javascript" th:src="@{/js/enum/uploaded-document-type.js}"></script>
+    <script type="text/javascript" th:src="@{/js/widget/document-list-widget.js}"></script>
+</span>
 
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleString(); // You can customize this format if needed
-    }
-
-    function refreshFileTable(projectId) {
-        $.ajax({
-            url: '/get-files/' + projectId,
-            type: 'GET',
-            success: function (files) {
-                console.log(files);
-                const $tbody = $('tbody');
-                $tbody.empty(); // Clear the table
-
-                files.forEach(function (file) {
-                    $tbody.append(`
-                    <tr>
-                        <td><a href="javascript:void(0);" class="text-dark fw-medium">
-                            <i class="mdi mdi-file-document font-size-16 align-middle text-primary me-2"></i>
-                            ${file.name}</a>
-                        </td>
-                        <td>${formatDate(file.updatedAt)}</td>
-                        <td>${formatFileSize(file.size)}</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-success">
-                                <i class="fas fa-brain me-2"></i> Analyze
-                            </button>
-                            <button type="button" class="btn btn-outline-danger">
-                                <i class="fas fa-trash-alt me-2"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `);
-                    if(files.length === 0)
-                        $tbody.append(`
-                        <tr class="text-center">
-                            <td colspan="4" class="text-danger">No Data Found!</td>
-                        `)
-                });
-            },
-            error: function (xhr, status, error) {
-                alert('Error refreshing table: ' + error);
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        $('#uploadForm').submit(function (e) {
-            console.log("entered here")
-            e.preventDefault(); // Prevent normal form submission
-
-            const formData = new FormData(this);
-            const projectId = [[${projectId}]]; // Read projectId before the AJAX call
-
-            $.ajax({
-                type: 'POST',
-                url: $(this).attr('action'), // Should match a @PostMapping on the server
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function (response) {
-                    // reset form data
-                    $('#uploadForm')[0].reset();
-                    // Hide the modal after successful upload
-                    $('#myModal').modal('hide');
-
-                    // Refresh the table
-                    refreshFileTable(projectId);
-                },
-                error: function (xhr, status, error) {
-                    alert('Error uploading file: ' + error);
-                    // reset form data
-                    $('#uploadForm')[0].reset();
-                    // Hide the modal after error
-                    $('#myModal').modal('hide');
-                }
-            });
-        });
+<script layout:fragment="localJsCodeBlock" type="text/javascript">
+    $("body").documentListWidget({
+        projectId: [[${projectId}]]
     });
 
 </script>

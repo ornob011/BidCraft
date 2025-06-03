@@ -35,7 +35,7 @@ public class Analysis {
     @JdbcTypeCode(SqlTypes.JSON)
     private HashMap<String, Object> mapValue = new HashMap<>();
 
-    private Boolean isAnalyzed;
+    private Boolean isAnalyzed = Boolean.FALSE;
 
     private LocalDateTime analyzedAt;
 

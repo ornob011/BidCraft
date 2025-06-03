@@ -1,4 +1,4 @@
-$.widget("ros.dashboardFormWidget", {
+$.widget("ros.projectFormWidget", {
     options: {
         message: {}
     },
@@ -64,7 +64,7 @@ $.widget("ros.dashboardFormWidget", {
                                 data: JSON.stringify(projectDto),
                                 success: function (response) {
                                     if (response && response.data) {
-                                        window.location.href = `/document-list/${response.data}`;
+                                        window.location.href = `/project/${response.data}/document-list`;
                                     } else {
                                         $errorBox
                                             .removeClass("d-none")

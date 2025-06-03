@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -18,9 +19,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private final LoginPageFilter loginPageFilter;
+    private final String rememberMeKey;
+    private final int rememberMeTokenValiditySeconds;
 
-    public SecurityConfiguration(LoginPageFilter loginPageFilter) {
+    public SecurityConfiguration(
+        LoginPageFilter loginPageFilter,
+        @Value("${security.rememberme.key}") String rememberMeKey,
+        @Value("${security.rememberme.token-validity-seconds}") int rememberMeTokenValiditySeconds
+    ) {
         this.loginPageFilter = loginPageFilter;
+        this.rememberMeKey = rememberMeKey;
+        this.rememberMeTokenValiditySeconds = rememberMeTokenValiditySeconds;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler postLoginRedirectHandler() {
+        return new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
@@ -49,8 +63,14 @@ public class SecurityConfiguration {
                 .loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/dashboard", true)
+                .defaultSuccessUrl("/projects", true)
+                .successHandler(postLoginRedirectHandler())
                 .permitAll()
+            )
+            .rememberMe(rememberMe -> rememberMe
+                .key(rememberMeKey)
+                .rememberMeParameter("remember-me")
+                .tokenValiditySeconds(rememberMeTokenValiditySeconds)
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")

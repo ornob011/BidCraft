@@ -77,7 +77,7 @@ public class AnalysisService {
                                               .collect(Collectors.joining("\n\n"));
 
         String summary;
-        summary = summaryAnalysisService.summeryAnalysis(documentAnalysisSummary, null);
+        summary = summaryAnalysisService.summaryAnalysis(documentAnalysisSummary, null);
         analysis.setSummary(summary);
 
         // todo:: generate analysis details for project
@@ -105,7 +105,7 @@ public class AnalysisService {
         documentResource = fileUploadService.getFileResource(uploadedDocument.getFileBucket());
 
         String summary;
-        summary = summaryAnalysisService.summeryAnalysis(documentResource, uploadedDocument.getUploadedDocumentType());
+        summary = summaryAnalysisService.summaryAnalysis(documentResource, uploadedDocument.getUploadedDocumentType());
         analysis.setSummary(summary);
 
         // todo:: generate analysis details for document

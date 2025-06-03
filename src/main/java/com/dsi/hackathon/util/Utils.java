@@ -10,9 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Utils {
     private Utils() {
@@ -59,7 +58,7 @@ public class Utils {
         );
     }
 
-    public static String getMessageFromMessageSource(MessageSource messageSource, MessageSourceResolvable messageSourceResolvable){
+    public static String getMessageFromMessageSource(MessageSource messageSource, MessageSourceResolvable messageSourceResolvable) {
         return messageSource.getMessage(messageSourceResolvable, Locale.getDefault());
     }
 
@@ -99,4 +98,17 @@ public class Utils {
                               .toList();
         return errors;
     }
+
+    public static Map<String, String> convertMetaDataToStringMap(Map<String, Object> metaData) {
+        if (metaData == null) return Collections.emptyMap();
+
+        return metaData.entrySet().stream()
+                       .collect(
+                           Collectors.toMap(
+                               Map.Entry::getKey,
+                               entry -> String.valueOf(entry.getValue())
+                           )
+                       );
+    }
+
 }

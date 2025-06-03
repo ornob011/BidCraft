@@ -52,7 +52,9 @@ public class ProjectService {
         fileBucketRepository.deleteAll(fileBucketList);
 
         // Delete from vector space
-        vectorStore.delete(MetaDataLabel.PROJECT_ID.eq(project.getId().toString()));
+        vectorStore.delete(
+            MetaDataLabel.PROJECT_ID.eq(project.getId())
+        );
 
         projectRepository.delete(project);
         logger.info("Deleted Project({}) Successfully", projectId);

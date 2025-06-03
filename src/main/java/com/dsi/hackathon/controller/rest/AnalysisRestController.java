@@ -21,7 +21,7 @@ public class AnalysisRestController {
 
     @PostMapping("/api/analysis/{analysisId}/summary")
     public ApiResponse<String> getAnalysisSummary(@PathVariable("analysisId") Integer analysisId) {
-        logger.info("Getting analysis summary for analysis id {}", analysisId);
+        logger.info("Getting analysis summary for Analysis({})", analysisId);
 
         Analysis analysis = analysisService.analyse(analysisId);
 

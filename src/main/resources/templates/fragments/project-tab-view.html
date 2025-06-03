@@ -16,6 +16,10 @@
             th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).ANALYSIS}"
             th:insert="~{ :: project-tab-item(iconClass='fa-magnifying-glass-chart')}"
         ></th:block>
+        <th:block
+            th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).SETTINGS}"
+            th:insert="~{ :: project-tab-item(iconClass='fa-gear')}"
+        ></th:block>
     </ul>
 </th:block>
 

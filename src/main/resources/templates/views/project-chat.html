@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/project-layout}" lang="en">
+
+<title layout:fragment="title">Analysis</title>
+
+<section layout:fragment="contentBody" layout:with="activeTab = ${T(com.dsi.hackathon.enums.ProjectTab).CHAT}">
+    <div class="d-flex flex-wrap">
+        <div class="dropdown w-100">
+            <h5 th:text="${T(com.dsi.hackathon.enums.ProjectTab).CHAT?.label}"></h5>
+        </div>
+    </div>
+    <hr class="my-3">
+    <div>
+
+    </div>
+</section>
+
+<span layout:fragment="customJsImportBlock">
+</span>
+
+<script layout:fragment="localJsCodeBlock" type="text/javascript">
+
+</script>
+
+</html>

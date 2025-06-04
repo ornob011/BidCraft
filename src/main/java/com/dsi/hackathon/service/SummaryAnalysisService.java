@@ -74,11 +74,15 @@ public class SummaryAnalysisService {
         Resource userMsgResource;
         userMsgResource = analysisPrompts.getAnalysisTemplate(documentType);
 
+        Resource markdownResource;
+        markdownResource = analysisPrompts.getMarkdownTemplate(documentType);
+
         // call api with specified prompts
         String summary;
         summary = chatClient.prompt()
                             .user(promptUserSpec -> promptUserSpec.text(userMsgResource)
-                                                                  .param("document", content))
+                                                                  .param("document", content)
+                                                                  .param("markdownTemplate", markdownResource))
                             .call()
                             .content();
 

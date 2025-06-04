@@ -23,12 +23,16 @@ import java.util.Objects;
 public class DocumentAnalysisController {
 
     private static final Logger logger = LoggerFactory.getLogger(DocumentAnalysisController.class);
+
     private final UploadedDocumentRepository uploadedDocumentRepository;
     private final ProjectRepository projectRepository;
     private final AnalysisRepository analysisRepository;
     private final AnalysisService analysisService;
 
-    public DocumentAnalysisController(UploadedDocumentRepository uploadedDocumentRepository, ProjectRepository projectRepository, AnalysisRepository analysisRepository, AnalysisService analysisService) {
+    public DocumentAnalysisController(UploadedDocumentRepository uploadedDocumentRepository,
+                                      ProjectRepository projectRepository,
+                                      AnalysisRepository analysisRepository,
+                                      AnalysisService analysisService) {
         this.uploadedDocumentRepository = uploadedDocumentRepository;
         this.projectRepository = projectRepository;
         this.analysisRepository = analysisRepository;

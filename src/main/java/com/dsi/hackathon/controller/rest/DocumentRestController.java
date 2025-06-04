@@ -67,6 +67,8 @@ public class DocumentRestController {
     @Transactional
     @DeleteMapping("/api/delete-file/{documentId}")
     public ResponseEntity<?> deleteFile(@PathVariable("documentId") Integer documentId) {
+        logger.info("Deleting UploadedDocument({})", documentId);
+
         UploadedDocument uploadedDocument = uploadedDocumentRepository.findById(documentId)
                                                                       .orElseThrow(
                                                                           DataNotFoundException.supplier(
@@ -93,6 +95,8 @@ public class DocumentRestController {
         }
 
         uploadedDocumentRepository.delete(uploadedDocument);
+
+        logger.info("Successfully deleted UploadedDocument({})", documentId);
 
         return ResponseEntity.ok().build();
     }

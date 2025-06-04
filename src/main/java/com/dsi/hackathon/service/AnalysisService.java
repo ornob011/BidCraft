@@ -20,11 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class AnalysisService {
     private static final Logger logger = LoggerFactory.getLogger(AnalysisService.class);
+
     private final AnalysisRepository analysisRepository;
     private final SummaryAnalysisService summaryAnalysisService;
     private final FileUploadService fileUploadService;
 
-    public AnalysisService(AnalysisRepository analysisRepository, SummaryAnalysisService summaryAnalysisService, FileUploadService fileUploadService) {
+    public AnalysisService(AnalysisRepository analysisRepository,
+                           SummaryAnalysisService summaryAnalysisService,
+                           FileUploadService fileUploadService) {
         this.analysisRepository = analysisRepository;
         this.summaryAnalysisService = summaryAnalysisService;
         this.fileUploadService = fileUploadService;
@@ -56,7 +59,7 @@ public class AnalysisService {
         }
 
         if (ObjectUtils.isEmpty(project.getUploadedDocuments())) {
-            logger.info("No uploaded documents found for Project({}) Analysis({})", project.getId(), analysis.getId());
+            logger.info("No uploaded documents found for Project({}) and Analysis({})", project.getId(), analysis.getId());
             return false;
         }
 
@@ -101,7 +104,7 @@ public class AnalysisService {
             throw new IllegalArgumentException("Analysis(%d) not targeted for UploadedDocument".formatted(analysis.getId()));
         }
 
-        logger.info("Analyzing UploadedDocument({}) Analysis({})", uploadedDocument.getId(), analysis.getId());
+        logger.info("Analyzing UploadedDocument({}) and Analysis({})", uploadedDocument.getId(), analysis.getId());
 
         if (Boolean.TRUE.equals(analysis.getIsAnalyzed()) && !Boolean.TRUE.equals(reAnalyze)) {
             return false;

@@ -27,7 +27,10 @@ public class SummaryAnalysisService {
     private final ChatClient chatClient;
     private final AnalysisPrompts analysisPrompts;
 
-    public SummaryAnalysisService(ChatClient.Builder builder, PgVectorStore vectorStore, VectorFileService vectorFileService, AnalysisPrompts analysisPrompts) {
+    public SummaryAnalysisService(ChatClient.Builder builder,
+                                  PgVectorStore vectorStore,
+                                  VectorFileService vectorFileService,
+                                  AnalysisPrompts analysisPrompts) {
         this.chatClient = builder.defaultSystem(analysisPrompts.getAnalyzerSystemMsg()).build();
         this.vectorStore = vectorStore;
         this.vectorFileService = vectorFileService;

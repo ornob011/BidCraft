@@ -21,6 +21,12 @@ public class AnalysisPrompts {
     @Value("classpath:/prompts/rfp-summarizer.st")
     private Resource rfpSummarizerTemplate;
 
+    @Value("classpath:/prompts/rfp/rfp-analyzer.st")
+    private Resource rfpAnalyzerTemplate;
+
+    @Value("classpath:/prompts/rfp/rfp-analysis-template.md")
+    private Resource rfpAnalysisMarkdownTemplate;
+
     @Value("classpath:/prompts/project-summarizer.st")
     private Resource projectSummarizerTemplate;
 
@@ -32,7 +38,19 @@ public class AnalysisPrompts {
 
         return switch (documentType) {
             case TERMS_OF_REFERENCE -> getTorSummarizerTemplate();
-            case REQUEST_FOR_PROPOSAL -> getTorSummarizerTemplate();
+            case REQUEST_FOR_PROPOSAL -> getRfpAnalyzerTemplate();
+            default -> null;
+        };
+    }
+
+    public Resource getMarkdownTemplate(UploadedDocumentType documentType) {
+
+        if (Objects.isNull(documentType)) {
+            return projectSummarizerTemplate;
+        }
+
+        return switch (documentType) {
+            case REQUEST_FOR_PROPOSAL -> getRfpAnalysisMarkdownTemplate();
             default -> null;
         };
     }

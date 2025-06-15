@@ -1,13 +1,14 @@
-Analyze the provided Request for Proposal (RFP) document for a software development project and extract all relevant information into the following detailed Markdown structure.
+Analyze the provided Request for Proposal (RFP) document for a software development project and extract all relevant information into the following structured Markdown format.
 
-Follow these rules:
+Follow these strict rules:
 
-1. Use the provided section structure as the primary format. For any field not mentioned in the document, write Not specified.
-2. If the RFP contains additional sections or unique content not already covered by the structure, create a new section titled ## 16. Additional or Custom Sections. Add clearly labeled subsections there using the headings or context from the RFP.
-3. If any content from the RFP does not logically fit into any existing section, include it under ## 17. Unclassified Content, ensuring no information is omitted from the document.
-4. Preserve formatting, enumerated lists, tables, and hierarchical relationships where applicable.
-5. Extract all information faithfully and precisely, maintaining the original context unless minor summarization improves clarity.
-6. Use clean, professional Markdown formatting with proper sub-headers and list item.
+1. Use the markdown structure provided exactly as-is.
+2. Each field has an optional **description** to help guide the extraction even if labels differ; match based on either the checklist field name or its description.
+3. If a value is missing from the RFP, write **Not specified**.
+4. If a **source reference** (such as page number, section title, or paragraph heading) can be determined, include it in a new line below the field as **_Source: [Reference]_**. If not, skip the source line entirely.
+5. Preserve original formatting for tables, bullets, etc.
+6. Maintain fidelity to the original RFP's language and structure unless minor summarization improves clarity.
+7. All unmatched or out-of-scope content must be placed under **## Additional/Unclassified Content**.
 
 --------------------------
 Markdown Start

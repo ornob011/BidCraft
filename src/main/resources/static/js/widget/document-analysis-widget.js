@@ -29,7 +29,7 @@ $.widget("ros.documentAnalysisWidget", {
                     if (response && response.data) {
                         self.parseMarkDown(self.el.summaryDiv, response.data);
                     } else {
-                        self.el.summaryDiv.html('Failed to generate analysis. Please reload page and try again.');
+                        self.el.summaryDiv.html('Analysis not available.');
                     }
                 },
                 error: function (xhr) {

@@ -2,6 +2,7 @@ package com.dsi.hackathon.controller.mvc;
 
 import com.dsi.hackathon.entity.Analysis;
 import com.dsi.hackathon.entity.Project;
+import com.dsi.hackathon.enums.AnalysisSection;
 import com.dsi.hackathon.enums.ProjectTab;
 import com.dsi.hackathon.exception.DataNotFoundException;
 import com.dsi.hackathon.repository.AnalysisRepository;
@@ -55,6 +56,8 @@ public class ProjectAnalysisController {
 
         model.addAttribute("activeTab", ProjectTab.ANALYSIS);
         model.addAttribute("activeSubTab", ProjectTab.ANALYSIS_PROJECT);
+
+        model.addAttribute("selectedSection", AnalysisSection.GENERAL_DETAILS);
 
         return "views/project-analysis";
     }

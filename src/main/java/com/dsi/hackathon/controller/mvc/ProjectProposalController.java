@@ -68,7 +68,7 @@ public class ProjectProposalController {
         model.addAttribute("activeTab", ProjectTab.PROPOSAL);
         model.addAttribute("activeSubTab", ProjectTab.PROPOSAL_SECTIONS);
 
-        model.addAttribute("proposalSection", proposalSection);
+        model.addAttribute("selectedSection", proposalSection);
 
         return "views/project-proposal-section";
     }

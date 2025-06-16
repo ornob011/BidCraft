@@ -18,6 +18,7 @@ public enum ProjectTab {
     PROPOSAL("Proposal"),
     PROPOSAL_PREVIEW("Proposal Preview"),
     PROPOSAL_SECTIONS("Proposal Sections"),
+    COMPLIANCE_VERIFICATION("Compliance Verification"),
     SETTINGS("Settings"),
     ;
 
@@ -34,6 +35,7 @@ public enum ProjectTab {
             case PROPOSAL,
                  PROPOSAL_SECTIONS -> UriComponentsBuilder.fromPath("/project/{projectId}/proposal/section").queryParam("proposalSection", ProposalSection.RESOURCE_PLAN).buildAndExpand(projectId).toUriString();
             case PROPOSAL_PREVIEW -> UriComponentsBuilder.fromPath("/project/{projectId}/proposal/preview").buildAndExpand(projectId).toUriString();
+            case COMPLIANCE_VERIFICATION -> UriComponentsBuilder.fromPath("/project/{projectId}/compliance-verification").buildAndExpand(projectId).toUriString();
             case SETTINGS -> UriComponentsBuilder.fromPath("/project/{projectId}/settings").buildAndExpand(projectId).toUriString();
         };
     }

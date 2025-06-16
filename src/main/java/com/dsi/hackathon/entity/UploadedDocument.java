@@ -55,4 +55,11 @@ public class UploadedDocument {
                ", updatedAt=" + updatedAt +
                '}';
     }
+
+    public String getDisplayName() {
+        return "%s: %s".formatted(
+            this.getUploadedDocumentType().getDisplayName(),
+            this.getAttachmentName()
+        );
+    }
 }

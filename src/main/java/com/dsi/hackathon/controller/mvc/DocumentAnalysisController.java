@@ -39,48 +39,36 @@ public class DocumentAnalysisController {
         this.analysisService = analysisService;
     }
 
-    @GetMapping("/project/{projectId}/analysis")
+    @GetMapping("/project/{projectId}/analysis/document")
     public String getDocumentList(@PathVariable("projectId") Integer projectId,
                                   @RequestParam(required = false) Integer documentId,
                                   Model model) {
         logger.info("Viewing analysis for Project({}) and UploadedDocument({})", projectId, documentId);
-        String summaryFor;
         Project project;
+        UploadedDocument uploadedDocument;
         Analysis analysis;
-        UploadedDocument uploadedDocument = null;
 
         project = projectRepository.findById(projectId).orElseThrow(DataNotFoundException::new);
 
         if (Objects.nonNull(documentId)) {
             uploadedDocument = uploadedDocumentRepository.findById(documentId).orElseThrow(DataNotFoundException::new);
 
-            summaryFor = "%s: %s".formatted(
-                uploadedDocument.getUploadedDocumentType().getDisplayName(),
-                uploadedDocument.getAttachmentName()
-            );
-
             analysis = analysisRepository.findByProjectIdAndUploadedDocumentId(projectId, documentId)
                                          .orElse(null);
 
-        } else {
-            summaryFor = "Project: %s".formatted(project.getName());
+            if (Objects.isNull(analysis)) {
+                analysis = analysisService.generateAnalysis(project, uploadedDocument);
+            }
 
-            analysis = analysisRepository.findByProjectIdAndUploadedDocumentNull(projectId)
-                                         .orElse(null);
-        }
-
-        if (Objects.isNull(analysis)) {
-            analysis = analysisService.generateAnalysis(project, uploadedDocument);
+            model.addAttribute("selectedDocument", uploadedDocument);
+            model.addAttribute("analysis", analysis);
         }
 
         model.addAttribute("project", project);
         model.addAttribute("activeTab", ProjectTab.ANALYSIS);
+        model.addAttribute("activeSubTab", ProjectTab.ANALYSIS_DOCUMENT);
 
-        model.addAttribute("projectId", projectId);
-        model.addAttribute("documentId", documentId);
-        model.addAttribute("summaryFor", summaryFor);
         model.addAttribute("uploadedDocuments", project.getUploadedDocuments());
-        model.addAttribute("analysis", analysis);
         return "views/document-analysis";
     }
 }

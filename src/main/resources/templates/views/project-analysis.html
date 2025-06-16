@@ -6,23 +6,22 @@
 <title layout:fragment="title">Analysis</title>
 
 <section layout:fragment="contentBody">
-    <h5 class="mb-3">Analysis For:</h5>
+    <h5 class="mb-3">Project Analysis</h5>
     <div class="d-flex flex-wrap">
         <div class="dropdown w-100">
             <button class="btn btn-outline-success font-size-16 fw-bold d-flex flex-row flex-nowrap justify-content-between align-items-center dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="mx-2" th:text="${selectedDocument?.getDisplayName() ?: 'Please select document.'}"></span>
+                <span class="mx-2" th:text="${'Overview'}"></span>
             </button>
             <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
-                <li class="mx-2" th:each="uploadedDocument : ${project?.uploadedDocuments}"><a class="dropdown-item" th:classappend="${selectedDocument?.id == uploadedDocument?.id ? 'btn-light-green':''}" th:href="@{/project/{projectId}/analysis/document(projectId=${project?.id}, documentId=${uploadedDocument?.id})}" th:text="${uploadedDocument?.getDisplayName()}"></a></li>
-                <li class="mx-2" th:if="${#arrays.isEmpty(project?.uploadedDocuments)}">No documents uploaded</li>
+                <li class="mx-2"><a class="dropdown-item" th:href="@{/project/{projectId}/analysis(projectId=${project?.id})}">Overview</a></li>
             </ul>
         </div>
     </div>
     <hr class="my-3">
     <div class="card">
-        <div class="card-header fw-bold">
-            <th:block th:text="${analysis?.uploadedDocument?.uploadedDocumentType?.displayName}"></th:block> Analysis
-        </div>
+<!--        <div class="card-header fw-bold">-->
+<!--            Summary-->
+<!--        </div>-->
 
         <div class="card-body">
             <div class="summaryDiv" th:if="${analysis?.isAnalyzed == true}" th:text="${analysis?.summary}"></div>
@@ -30,7 +29,7 @@
             <div class="summaryDiv" th:unless="${analysis?.isAnalyzed == true}">
                 Summary not available.
 
-                <th:block th:if="${analysis?.uploadedDocument != null}">
+                <th:block th:unless="${#arrays.isEmpty(project?.uploadedDocuments)}">
                     Generating Summary....
                     <div class="se-pre-con"></div>
                 </th:block>

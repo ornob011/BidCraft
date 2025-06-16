@@ -1,5 +1,3 @@
-# 📄 RFP Analysis Summary
-
 ## General Details
 - **RFP Title**  
   _Title of the RFP document. Often on the cover or header._

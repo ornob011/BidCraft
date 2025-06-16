@@ -14,7 +14,7 @@
         ></th:block>
         <th:block
             th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).ANALYSIS}"
-            th:insert="~{ :: project-tab-item(iconClass='fa-magnifying-glass-chart')}"
+            th:insert="~{ :: project-tab-dropdown-item(iconClass='fa-magnifying-glass-chart')}"
         ></th:block>
         <th:block
             th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).SETTINGS}"
@@ -27,10 +27,30 @@
     <!--/*@thymesVar id="activeTab" type="com.dsi.hackathon.enums.ProjectTab"*/-->
     <!--/*@thymesVar id="projectTab" type="com.dsi.hackathon.enums.ProjectTab"*/-->
     <a class="nav-link border border-1 border-bottom-0"
-       th:with="isActive = ${projectTab == activeTab}"
-       th:classappend="${isActive ? 'active bg-success text-white fw-semibold' : 'text-dark'}"
+       th:classappend="${projectTab == activeTab ? 'active bg-success text-white fw-semibold' : 'text-dark'}"
        th:href="${projectTab?.getUrl(project?.id)}">
         <i class="fas me-1" th:classappend="${iconClass}"></i>
         <th:block th:text="${projectTab?.label}"></th:block>
     </a>
+</li>
+
+<li th:fragment="project-tab-dropdown-item(iconClass)" th:if="${projectTab}" class="nav-item dropdown">
+    <!--/*@thymesVar id="activeTab" type="com.dsi.hackathon.enums.ProjectTab"*/-->
+    <!--/*@thymesVar id="activeSubTab" type="com.dsi.hackathon.enums.ProjectTab"*/-->
+    <!--/*@thymesVar id="projectTab" type="com.dsi.hackathon.enums.ProjectTab"*/-->
+    <button class="nav-link dropdown-toggle border border-1 border-bottom-0"
+            href="#"
+            data-bs-toggle="dropdown"
+            th:classappend="${projectTab == activeTab ? 'active bg-success text-white fw-semibold' : 'text-dark'}"
+    >
+        <i class="fas me-1" th:classappend="${iconClass}"></i>
+        <th:block th:text="${projectTab?.label}"></th:block>
+    </button>
+    <ul class="dropdown-menu" style="min-width: 200px;">
+        <li class="my-1" th:each="subtab : ${projectTab?.getSubTabs()}">
+            <a class="dropdown-item" th:href="${subtab?.getUrl(project?.id)}" th:classappend="${subtab == activeSubTab ? 'active bg-success text-white fw-semibold' : 'text-dark'}">
+                <th:block th:text="${subtab?.label}"></th:block>
+            </a>
+        </li>
+    </ul>
 </li>

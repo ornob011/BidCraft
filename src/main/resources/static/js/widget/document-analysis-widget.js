@@ -10,7 +10,7 @@ $.widget("ros.documentAnalysisWidget", {
 
         let self = this;
         self.el = {};
-        self.el.summaryDiv=$("#summaryDiv");
+        self.el.summaryDiv=$(".summaryDiv");
     },
     _init: function () {
         const self = this;

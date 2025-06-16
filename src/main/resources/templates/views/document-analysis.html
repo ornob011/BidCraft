@@ -24,15 +24,21 @@
         <div class="card-header fw-bold">
             Summary
         </div>
-        <div id="summaryDiv" class="card-body">
-            <th:block th:text="${analysis?.isAnalyzed == true ? analysis?.summary : 'Summary not available.'}"></th:block>
-            <th:block th:if="${analysis?.isAnalyzed != true && (analysis?.uploadedDocument != null || not #arrays.isEmpty(analysis?.project?.uploadedDocuments))}">
-                Generating Summary....
-            </th:block>
 
-            <div th:if="${analysis?.isAnalyzed != true && #arrays.isEmpty(analysis?.project?.uploadedDocuments)}">
-                Please upload project related documents for analysis from
-                <a th:href="@{/project/{projectId}/document-list(projectId=${project?.id})}">Document list</a>
+        <div class="card-body">
+            <div class="summaryDiv" th:if="${analysis?.isAnalyzed == true}" th:text="${analysis?.summary}"></div>
+
+            <div class="summaryDiv" th:unless="${analysis?.isAnalyzed == true}">
+                Summary not available.
+
+                <th:block th:if="${analysis?.uploadedDocument != null || not #arrays.isEmpty(analysis?.project?.uploadedDocuments)}">
+                    Generating Summary....
+                </th:block>
+
+                <th:block th:unless="${analysis?.uploadedDocument != null || not #arrays.isEmpty(analysis?.project?.uploadedDocuments)}">
+                    Please upload project related documents for analysis from
+                    <a th:href="@{/project/{projectId}/document-list(projectId=${project?.id})}">Document list</a>
+                </th:block>
             </div>
         </div>
     </div>

@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @AllArgsConstructor
 public enum ProjectTab {
     OVERVIEW("Overview"),
-    CHAT("Chat"),
+    CHAT("Queries"),
     DOCUMENT_LIST("Documents"),
     ANALYSIS("Analysis"),
     SETTINGS("Settings"),

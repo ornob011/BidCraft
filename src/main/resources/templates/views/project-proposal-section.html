@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/project-layout}" lang="en">
+
+<title layout:fragment="title">Proposal</title>
+
+<section layout:fragment="contentBody">
+<!--    <h5 class="mb-3">Project Analysis</h5>-->
+    <div class="d-flex flex-wrap">
+        <div class="dropdown w-100">
+            <button class="btn btn-outline-success font-size-16 fw-bold d-flex flex-row flex-nowrap justify-content-between align-items-center dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="mx-2" th:text="${selectedSection?.label}"></span>
+            </button>
+            <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
+                <li class="mx-2" th:each="section : ${T(com.dsi.hackathon.enums.ProposalSection).values()}">
+                    <a class="dropdown-item" th:classappend="${section == selectedSection ? 'btn-light-green':''}" th:href="@{/project/{projectId}/proposal/section(projectId=${project?.id}, proposalSection=${section})}" th:text="${section?.label}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <hr class="my-3">
+    <div class="alert alert-warning" role="alert">Not Implemented Yet</div>
+</section>
+
+<span layout:fragment="customJsImportBlock">
+    <script type="text/javascript" th:src="@{/webjars/bootbox/5.5.2/bootbox.all.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/marked/15.0.12/marked.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/dompurify/3.2.6/dist/purify.js}"></script>
+</span>
+
+<script layout:fragment="localJsCodeBlock" type="text/javascript">
+
+</script>
+
+</html>

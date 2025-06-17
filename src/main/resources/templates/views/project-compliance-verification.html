@@ -3,12 +3,12 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/project-layout}" lang="en">
 
-<title layout:fragment="title">Queries</title>
+<title layout:fragment="title">Compliance Verification</title>
 
 <section layout:fragment="contentBody">
     <div class="d-flex flex-wrap">
         <div class="dropdown w-100">
-            <h5 th:text="${T(com.dsi.hackathon.enums.ProjectTab).CHAT?.label}"></h5>
+            <h5 th:text="${T(com.dsi.hackathon.enums.ProjectTab).COMPLIANCE_VERIFICATION?.label}"></h5>
         </div>
     </div>
     <hr class="my-3">

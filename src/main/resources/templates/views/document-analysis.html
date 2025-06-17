@@ -6,7 +6,7 @@
 <title layout:fragment="title">Analysis</title>
 
 <section layout:fragment="contentBody">
-    <h5 class="mb-3">Analysis For:</h5>
+    <h5 class="mb-3">Analyzed Document</h5>
     <div class="d-flex flex-wrap">
         <div class="dropdown w-100">
             <button class="btn btn-outline-success font-size-16 fw-bold d-flex flex-row flex-nowrap justify-content-between align-items-center dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,10 +28,10 @@
             <div class="summaryDiv" th:if="${analysis?.isAnalyzed == true}" th:text="${analysis?.summary}"></div>
 
             <div class="summaryDiv" th:unless="${analysis?.isAnalyzed == true}">
-                Summary not available.
+                Analysis not available.
 
                 <th:block th:if="${analysis?.uploadedDocument != null}">
-                    Generating Summary....
+                    Generating Analysis....
                     <div class="se-pre-con"></div>
                 </th:block>
 
@@ -52,8 +52,8 @@
 </span>
 
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
-    $("body").documentAnalysisWidget({
-        analysisId: [[${analysis?.id ?: null}]],
+    [[${#arrays.isEmpty(project?.uploadedDocuments)}]] || $("body").documentAnalysisWidget({
+        analysisId: [[${analysis?.id ?: 'null'}]],
         isAnalyzed: [[${analysis?.isAnalyzed ?: false}]]
     });
 </script>

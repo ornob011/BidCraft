@@ -3,23 +3,21 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/project-layout}" lang="en">
 
-<title layout:fragment="title">Queries</title>
+<title layout:fragment="title">Proposal</title>
 
 <section layout:fragment="contentBody">
-    <div class="d-flex flex-wrap">
-        <div class="dropdown w-100">
-            <h5 th:text="${T(com.dsi.hackathon.enums.ProjectTab).CHAT?.label}"></h5>
-        </div>
-    </div>
+    <h5 class="mb-3">Proposal Preview</h5>
     <hr class="my-3">
     <div class="alert alert-warning" role="alert">Not Implemented Yet</div>
 </section>
 
 <span layout:fragment="customJsImportBlock">
+    <script type="text/javascript" th:src="@{/webjars/bootbox/5.5.2/bootbox.all.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/marked/15.0.12/marked.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/dompurify/3.2.6/dist/purify.js}"></script>
 </span>
 
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
-
 </script>
 
 </html>

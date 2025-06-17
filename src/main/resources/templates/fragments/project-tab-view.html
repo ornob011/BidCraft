@@ -17,6 +17,14 @@
             th:insert="~{ :: project-tab-dropdown-item(iconClass='fa-magnifying-glass-chart')}"
         ></th:block>
         <th:block
+            th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).PROPOSAL}"
+            th:insert="~{ :: project-tab-dropdown-item(iconClass='fa-file-lines')}"
+        ></th:block>
+        <th:block
+            th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).COMPLIANCE_VERIFICATION}"
+            th:insert="~{ :: project-tab-item(iconClass='fa-list-check')}"
+        ></th:block>
+        <th:block
             th:with="projectTab = ${T(com.dsi.hackathon.enums.ProjectTab).SETTINGS}"
             th:insert="~{ :: project-tab-item(iconClass='fa-gear')}"
         ></th:block>

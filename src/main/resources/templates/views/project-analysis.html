@@ -10,10 +10,12 @@
     <div class="d-flex flex-wrap">
         <div class="dropdown w-100">
             <button class="btn btn-outline-success font-size-16 fw-bold d-flex flex-row flex-nowrap justify-content-between align-items-center dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <span class="mx-2" th:text="${'Overview'}"></span>
+                <span class="mx-2" th:text="${selectedSection?.label}"></span>
             </button>
             <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
-                <li class="mx-2"><a class="dropdown-item" th:href="@{/project/{projectId}/analysis(projectId=${project?.id})}">Overview</a></li>
+                <li class="mx-2" th:each="section : ${T(com.dsi.hackathon.enums.AnalysisSection).values()}">
+                    <a class="dropdown-item" th:classappend="${section == selectedSection ? 'btn-light-green':''}" th:href="@{/project/{projectId}/analysis(projectId=${project?.id})}" th:text="${section?.label}"></a>
+                </li>
             </ul>
         </div>
     </div>
@@ -27,10 +29,10 @@
             <div class="summaryDiv" th:if="${analysis?.isAnalyzed == true}" th:text="${analysis?.summary}"></div>
 
             <div class="summaryDiv" th:unless="${analysis?.isAnalyzed == true}">
-                Summary not available.
+                Analysis not available.
 
                 <th:block th:unless="${#arrays.isEmpty(project?.uploadedDocuments)}">
-                    Generating Summary....
+                    Generating analysis....
                     <div class="se-pre-con"></div>
                 </th:block>
 
@@ -51,9 +53,9 @@
 </span>
 
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
-    $("body").documentAnalysisWidget({
-        analysisId: [[${analysis?.id ?: null}]],
-        isAnalyzed: [[${analysis?.isAnalyzed ?: false}]]
+    [[${#arrays.isEmpty(project?.uploadedDocuments)}]] || $("body").documentAnalysisWidget({
+        analysisId: [[${analysis?.id ?: 'null'}]],
+        isAnalyzed: [[${analysis?.isAnalyzed == true ?: false}]]
     });
 </script>
 

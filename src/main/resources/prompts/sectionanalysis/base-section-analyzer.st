@@ -8,6 +8,7 @@ Follow these strict rules:
 4. If a **source reference** (such as page number, section title, or paragraph heading) can be determined, include it in a new line below the field as **_Source: [Reference]_**. If not, skip the source line entirely. Key references are: Document name, Page number, Document section
 5. Preserve original formatting for tables, bullets, etc.
 6. Maintain fidelity to the original documents's language and structure unless minor summarization improves clarity.
+7. Do not include or add any other section than what is provided in the Markdown. Always provide only the single section mentioned in the markdown file.
 
 --------------------------
 Markdown Start

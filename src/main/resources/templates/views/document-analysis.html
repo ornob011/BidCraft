@@ -52,7 +52,7 @@
 </span>
 
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
-    [[${#arrays.isEmpty(project?.uploadedDocuments)}]] || $("body").documentAnalysisWidget({
+    [[${#arrays.isEmpty(analysis?.uploadedDocument)}]] || $("body").documentAnalysisWidget({
         analysisId: [[${analysis?.id ?: 'null'}]],
         isAnalyzed: [[${analysis?.isAnalyzed ?: false}]]
     });

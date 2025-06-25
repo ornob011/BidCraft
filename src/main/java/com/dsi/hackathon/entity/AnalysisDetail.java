@@ -1,5 +1,6 @@
 package com.dsi.hackathon.entity;
 
+import com.dsi.hackathon.enums.AnalysisSection;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,11 +27,21 @@ public class AnalysisDetail {
     private Analysis analysis;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uploaded_document_id", nullable = false)
+    @JoinColumn(name = "uploaded_document_id")
     private UploadedDocument uploadedDocument;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private HashMap<String, Object> mapValue = new HashMap<>();
+
+    @Column(columnDefinition = "text")
+    private String analysisContent;
+
+    @Enumerated(EnumType.STRING)
+    AnalysisSection analysisSection;
+
+    Boolean isAnalyzed;
+
+    LocalDateTime analyzedAt;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

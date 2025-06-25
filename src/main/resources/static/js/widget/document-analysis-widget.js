@@ -2,6 +2,7 @@ $.widget("ros.documentAnalysisWidget", {
     options: {
         analysisId: undefined,
         isAnalyzed: undefined,
+        selectedSection: undefined,
         message: {}
     },
 
@@ -22,7 +23,7 @@ $.widget("ros.documentAnalysisWidget", {
 
         if (!self.options.isAnalyzed) {
             $.ajax({
-                url: `/api/analysis/${self.options.analysisId}/summary`,
+                url: `/api/analysis/${self.options.analysisId}/summary?section=${self.options.selectedSection}`,
                 type: "POST",
                 global: false,
                 success: function (response) {

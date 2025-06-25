@@ -49,7 +49,7 @@ $.widget("ros.documentListWidget", {
                             <td>${self.formatDate(file.updatedAt)}</td>
                             <td>${Ros.ENUM.UploadedDocumentType[file?.type] || ''}</td>
                             <td class="text-center">
-                                <a href="/project/${file.projectId}/analysis?documentId=${file.id}" class="btn btn-outline-success">
+                                <a href="/project/${file.projectId}/analysis/document?documentId=${file.id}" class="btn btn-outline-success">
                                     <i class="fas fa-brain me-2"></i> Analyze
                                 </a>
                                 <button type="button" class="btn btn-outline-danger btn-delete-file" data-file-id="${file.id}">

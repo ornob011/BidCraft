@@ -36,7 +36,7 @@
             <td th:text="${#temporals.format(file.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td>[[${file?.type?.displayName}]]</td>
             <td class="text-center">
-                <a th:href="@{/project/{projectId}/analysis(documentId=${file.id},projectId=${file.projectId})}"
+                <a th:href="@{/project/{projectId}/analysis/document(documentId=${file.id},projectId=${file.projectId})}"
                    class="btn btn-outline-success">
                     <i class="fas fa-brain me-2"></i>
                     Analyze

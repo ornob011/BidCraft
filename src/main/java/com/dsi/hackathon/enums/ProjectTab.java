@@ -30,7 +30,7 @@ public enum ProjectTab {
             case CHAT -> UriComponentsBuilder.fromPath("/project/{projectId}/chat").buildAndExpand(projectId).toUriString();
             case DOCUMENT_LIST -> UriComponentsBuilder.fromPath("/project/{projectId}/document-list").buildAndExpand(projectId).toUriString();
             case ANALYSIS,
-                 ANALYSIS_PROJECT -> UriComponentsBuilder.fromPath("/project/{projectId}/analysis").buildAndExpand(projectId).toUriString();
+                 ANALYSIS_PROJECT -> UriComponentsBuilder.fromPath("/project/{projectId}/analysis").queryParam("section", AnalysisSection.GENERAL_DETAILS).buildAndExpand(projectId).toUriString();
             case ANALYSIS_DOCUMENT -> UriComponentsBuilder.fromPath("/project/{projectId}/analysis/document").buildAndExpand(projectId).toUriString();
             case PROPOSAL,
                  PROPOSAL_SECTIONS -> UriComponentsBuilder.fromPath("/project/{projectId}/proposal/section").queryParam("proposalSection", ProposalSection.RESOURCE_PLAN).buildAndExpand(projectId).toUriString();

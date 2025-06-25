@@ -10,6 +10,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 
 @Setter
 @Getter
@@ -46,6 +47,14 @@ public class Analysis {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(
+        mappedBy = "analysis",
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private List<AnalysisDetail> analysisDetailList;
 
     @Override
     public String toString() {

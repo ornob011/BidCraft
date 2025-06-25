@@ -14,7 +14,7 @@
             </button>
             <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton1">
                 <li class="mx-2" th:each="section : ${T(com.dsi.hackathon.enums.AnalysisSection).values()}">
-                    <a class="dropdown-item" th:classappend="${section == selectedSection ? 'btn-light-green':''}" th:href="@{/project/{projectId}/analysis(projectId=${project?.id})}" th:text="${section?.label}"></a>
+                    <a class="dropdown-item" th:classappend="${section == selectedSection ? 'btn-light-green':''}" th:href="@{/project/{projectId}/analysis(projectId=${project?.id}, section=${section})}" th:text="${section?.label}"></a>
                 </li>
             </ul>
         </div>
@@ -26,9 +26,9 @@
 <!--        </div>-->
 
         <div class="card-body">
-            <div class="summaryDiv" th:if="${analysis?.isAnalyzed == true}" th:text="${analysis?.summary}"></div>
+            <div class="summaryDiv" th:if="${analysisDetail?.isAnalyzed == true}" th:text="${analysisDetail?.analysisContent}"></div>
 
-            <div class="summaryDiv" th:unless="${analysis?.isAnalyzed == true}">
+            <div class="summaryDiv" th:unless="${analysisDetail?.isAnalyzed == true}">
                 Analysis not available.
 
                 <th:block th:unless="${#arrays.isEmpty(project?.uploadedDocuments)}">
@@ -55,7 +55,8 @@
 <script layout:fragment="localJsCodeBlock" type="text/javascript">
     [[${#arrays.isEmpty(project?.uploadedDocuments)}]] || $("body").documentAnalysisWidget({
         analysisId: [[${analysis?.id ?: 'null'}]],
-        isAnalyzed: [[${analysis?.isAnalyzed == true ?: false}]]
+        isAnalyzed: [[${analysisDetail?.isAnalyzed == true ?: false}]],
+        selectedSection: '[[${selectedSection ?: T(com.dsi.hackathon.enums.AnalysisSection).GENERAL_DETAILS}]]'
     });
 </script>
 

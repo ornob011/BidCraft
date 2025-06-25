@@ -23,7 +23,7 @@ $.widget("ros.documentAnalysisWidget", {
 
         if (!self.options.isAnalyzed) {
             $.ajax({
-                url: `/api/analysis/${self.options.analysisId}/summary?section=${self.options.selectedSection}`,
+                url: `/api/analysis/${self.options.analysisId}/summary${self.options.selectedSection ? '?section=' + self.options.selectedSection : ''}`,
                 type: "POST",
                 global: false,
                 success: function (response) {
